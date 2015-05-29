@@ -1,0 +1,61 @@
+require 'cucumber/rake/task'
+require 'rspec/core/rake_task'
+require 'active_record'
+
+def cucumber_options(options)
+  ENV['CUCUMBER_OPTS'] = options
+end
+
+def combine_options(set_1, set_2)
+  set_2 ? "#{set_1} #{set_2}" : set_1
+end
+
+namespace 'tef' do
+  namespace 'cuke_keeper' do
+    def tef_env
+      !ENV['TEF_ENV'].nil? ? ENV['TEF_ENV'].downcase : 'dev'
+    end
+
+    def tef_config
+      !ENV['TEF_CONFIG'].nil? ? ENV['TEF_CONFIG'] : './config'
+    end
+
+    desc 'Migrate the database through scripts in db/migrate. Target specific version with VERSION=x'
+    task migrate: :environment do
+      ActiveRecord::Migrator.migrate('db/migrate', ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
+    end
+
+    task :environment do
+      ActiveRecord::Base.logger = nil
+      db_config = YAML.load(File.open("#{tef_config}/database_#{tef_env}.yml"))
+      ActiveRecord::Base.establish_connection(db_config)
+      ActiveRecord::Base.table_name_prefix = "keeper_#{tef_env}_"
+      ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
+    end
+
+    namespace 'cucumber' do
+      desc 'Run all tests for the manager'
+      task :tests, [:command_options] do |_t, args|
+        cucumber_options(combine_options('-t ~@wip -t ~@off', args[:command_options]))
+      end
+      Cucumber::Rake::Task.new(:tests)
+    end
+
+    namespace 'rspec' do
+      desc 'Run all specifications'
+      RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
+        t.rspec_opts = '--tag ~wip --color '
+        t.rspec_opts << args[:command_options] if args[:command_options]
+      end
+    end
+
+    desc 'Run everything'
+    task :test_everything, [:command_options] do |_t, args|
+      Rake::Task['tef:cuke_keeper:rspec:specs'].invoke(args[:command_options])
+    end
+
+    task default: :test_everything
+  end
+end
+
+task default: 'tef:cuke_keeper:test_everything'

@@ -1,0 +1,60 @@
+source 'http://rubygems.org'
+
+
+# The gems that we use to test our stuff
+def testing_gems
+  gem 'pry'
+  gem 'pry-debugger'
+  gem 'rake'
+  gem 'rspec', '~> 3.0.0'
+  gem 'rspec-wait', '= 0.0.2'
+  gem 'cucumber'
+  gem 'simplecov'
+  gem 'database_cleaner'
+end
+
+# The development (i.e. source code) versions of gems that are (or are needed by) our stuff
+def dev_gems
+  gem 'tiny_tds', '~> 0.6'
+  gem 'activerecord', '~> 4.1'
+  gem 'activerecord-sqlserver-adapter', '~> 4.1'
+
+  # Dev mode has to explicitly include every needed gem dependency in the project in order to
+  # be properly (i.e. recursively) loaded from source by Bundler
+  gem 'tef-keeper', :path => '../tef-keeper'
+  gem 'tef-core', :path => '../tef-core'
+  gem 'tef-cuke_keeper', :path => '../tef-cuke_keeper'
+  gem 'text-table'
+end
+
+# The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
+def test_gems
+  gem 'tiny_tds', '~> 0.6'
+  gem 'activerecord', '~> 4.1'
+  gem 'activerecord-sqlserver-adapter', '~> 4.1'
+  gem 'tef-core'
+  gem 'tef-keeper'
+  gem 'text-table'
+  gem 'tef-cuke_keeper'
+end
+
+# Nothing new to see here.
+def prod_gems
+  test_gems
+end
+
+puts "Bundler mode: #{ENV['BUNDLE_MODE']}"
+mode = ENV['BUNDLE_MODE']
+
+case mode
+  when 'dev'
+    testing_gems
+    dev_gems
+  when 'test', 'prod'
+    testing_gems
+    test_gems
+  when 'prod'
+    prod_gems
+  else
+    raise(ArgumentError, "Unknown bundle mode: #{mode}. Must be one of dev/test/prod.")
+end
