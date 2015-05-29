@@ -1,0 +1,43 @@
+require 'cucumber/rake/task'
+require 'rspec/core/rake_task'
+
+def set_cucumber_options(options)
+  ENV['CUCUMBER_OPTS'] = options
+end
+
+def combine_options(set_1, set_2)
+  set_2 ? "#{set_1} #{set_2}" : set_1
+end
+
+namespace 'tef' do
+  namespace 'worker' do
+    namespace 'cuke_worker' do
+
+      namespace 'cucumber' do
+        desc 'Run all tests for cuke_worker'
+        task :tests, [:command_options] do |_t, args|
+          set_cucumber_options(combine_options('-t ~@wip -t ~@off', args[:command_options]))
+        end
+        Cucumber::Rake::Task.new(:tests)
+      end
+
+      namespace 'rspec' do
+        desc 'Run all specifications for cuke_worker'
+        RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
+          t.rspec_opts = '--tag ~wip --color '
+          t.rspec_opts << args[:command_options] if args[:command_options]
+        end
+      end
+
+      desc 'Run everything for cuke_worker'
+      task :test_everything, [:command_options] do |_t, args|
+        Rake::Task['tef:worker:cuke_worker:rspec:specs'].invoke(args[:command_options])
+        Rake::Task['tef:worker:cuke_worker:cucumber:tests'].invoke(args[:command_options])
+      end
+
+      task default: 'tef:worker:cuke_worker:test_everything'
+    end
+  end
+end
+
+task default: 'tef:worker:cuke_worker:test_everything'

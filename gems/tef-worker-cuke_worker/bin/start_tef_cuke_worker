@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'tef/worker/cuke_worker'
+
+
+work_node = TEF::Worker::WorkNode.new(worker_class: TEF::Worker::CukeWorker, worker_type: 'cucumber')
+work_node.start
+
+
+begin
+  loop do
+    sleep 1
+  end
+rescue Interrupt => _
+  work_node.stop
+
+  exit(0)
+end
