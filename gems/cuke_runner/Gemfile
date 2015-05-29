@@ -1,0 +1,51 @@
+source 'http://rubygems.org'
+
+
+# The gems that we use to test our stuff
+def testing_gems
+  gem 'cucumber'
+  gem 'bundler', '~> 1.6'
+  gem 'rake'
+  gem 'rspec', '~> 3.0.0'
+  gem 'pry', '~> 0.9'
+  gem 'simplecov'
+  gem 'powerpack'
+end
+
+# The development (i.e. source code) versions of gems that are (or are needed by) our stuff
+def dev_gems
+  gem 'cuke_commander', '~> 1.0'
+
+  # Dev mode has to explicitly include every needed gem dependency in the project in order to
+  # be properly (i.e. recursively) loaded from source by Bundler
+  gem 'task_runner', :path => '../task_runner'
+  gem 'cuke_runner', path: '../cuke_runner'
+end
+
+# The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
+def test_gems
+  gem 'task_runner'
+  gem 'cuke_commander', '~> 1.0'
+  gem 'cuke_runner'
+end
+
+# Nothing new to see here.
+def prod_gems
+  test_gems
+end
+
+puts "Bundler mode: #{ENV['BUNDLE_MODE']}"
+mode = ENV['BUNDLE_MODE']
+
+case mode
+  when 'dev'
+    testing_gems
+    dev_gems
+  when 'test', 'prod'
+    testing_gems
+    test_gems
+  when 'prod'
+    prod_gems
+  else
+    raise(ArgumentError, "Unknown bundle mode: #{mode}. Must be one of dev/test/prod.")
+end

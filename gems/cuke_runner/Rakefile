@@ -1,0 +1,38 @@
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
+
+# todo - this and several other gems need to be 'tef-'ified into a consistent namespace
+namespace 'cuke_runner' do
+
+  namespace 'rspec' do
+    desc 'Run all specifications for the gem'
+    RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
+      t.rspec_opts = "-t ~wip -t ~off "
+      t.rspec_opts << args[:command_options] if args[:command_options]
+    end
+  end
+
+  desc 'Run All The Things'
+  task :everything do
+    Rake::Task[:specs].invoke
+    Rake::Task[:build].invoke
+  end
+
+  desc 'Test everything for the cuke_runner'
+  task :test_everything, [:command_options] do |_t, args|
+    Rake::Task['cuke_runner:rspec:specs'].invoke(args[:command_options])
+  end
+
+  desc 'Build the gem'
+  task :build do
+    system 'gem build cuke_runner.gemspec'
+  end
+
+  desc 'Push the compiled gem to geminabox'
+  task :inabox do
+    system "gem inabox -o pkg/cuke_runner-#{CukeRunner::VERSION}.gem"
+  end
+
+
+  task :default => :everything
+end
