@@ -1,0 +1,22 @@
+require "bundler/gem_tasks"
+require 'rspec/core/rake_task'
+
+
+namespace 'mdf' do
+
+  namespace 'rspec' do
+    desc 'Run all specifications for mdf'
+    RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
+      t.rspec_opts = '--tag ~wip --color '
+      t.rspec_opts << args[:command_options] if args[:command_options]
+    end
+  end
+
+  desc 'Run everything for mdf'
+  task :test_everything, [:command_options] do |_t, args|
+    Rake::Task['mdf:rspec:specs'].invoke(args[:command_options])
+  end
+
+end
+
+task default: 'mdf:test_everything'
