@@ -1,0 +1,25 @@
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec
+
+namespace 'bundle_daemon' do
+
+  namespace 'rspec' do
+    desc 'Run all specifications for the bundle_daemon'
+    RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
+      t.rspec_opts = '--tag ~wip --no-color '
+      t.rspec_opts << args[:command_options] if args[:command_options]
+    end
+  end
+
+  desc 'Test everything for the bundle_daemon'
+  task :test_everything, [:command_options] do |_t, args|
+    Rake::Task['bundle_daemon:rspec:specs'].invoke(args[:command_options])
+  end
+
+
+  task :default => :test_everything
+end
