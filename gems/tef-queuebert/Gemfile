@@ -1,0 +1,55 @@
+source 'http://rubygems.org'
+
+
+# The gems that we use to test our stuff
+def testing_gems
+  gem 'cucumber'
+  gem 'bundler', '~> 1.6'
+  gem 'rake'
+  gem 'rspec', '~> 3.0.0'
+  gem 'rspec-wait', '= 0.0.2'
+  gem 'simplecov'
+  gem 'pry'
+  gem 'pry-debugger'
+end
+
+# The development (i.e. source code) versions of gems that are (or are needed by) our stuff
+def dev_gems
+  gem 'bunny', '~> 1.4'
+  gem 'cuke_slicer', '~>1.0'
+
+  # Dev mode has to explicitly include every needed gem dependency in the project in order to
+  # be properly (i.e. recursively) loaded from source by Bundler
+  gem 'tef-core', :path => '../tef-core'
+  gem 'tef-queuebert', :path => '../tef-queuebert'
+end
+
+# The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
+def test_gems
+  gem 'bunny', '~> 1.4'
+  gem 'cuke_slicer', '~>1.0'
+
+  gem 'tef-core'
+  gem 'tef-queuebert'
+end
+
+# Nothing new to see here.
+def prod_gems
+  test_gems
+end
+
+puts "Bundler mode: #{ENV['BUNDLE_MODE']}"
+mode = ENV['BUNDLE_MODE']
+
+case mode
+  when 'dev'
+    testing_gems
+    dev_gems
+  when 'test', 'prod'
+    testing_gems
+    test_gems
+  when 'prod'
+    prod_gems
+  else
+    raise(ArgumentError, "Unknown bundle mode: #{mode}. Must be one of dev/test/prod.")
+end

@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'tef/queuebert'
+
+queuebert = TEF::Queuebert::Queuebert.new()
+queuebert.start
+begin
+  loop do
+
+    # This was the problem. All of the speed was sucked away in endless hyper loop cycles.
+    sleep 600
+
+
+    # Nothing
+  end
+rescue Interrupt => _
+  queuebert.stop
+
+  exit(0)
+end
