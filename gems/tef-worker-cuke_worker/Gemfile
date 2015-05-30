@@ -19,11 +19,11 @@ def dev_gems
 
   # Dev mode has to explicitly include every needed gem dependency in the project in order to
   # be properly (i.e. recursively) loaded from source by Bundler
-  gem 'task_runner', path: '../task_runner'
+  gem 'task_runner', path: '../../../tef/gems/task_runner'
   gem 'cuke_runner', path: '../cuke_runner'
-  gem 'tef-worker', path: '../tef-worker'
+  gem 'tef-worker', path: '../../../tef/gems/tef-worker'
   gem 'tef-worker-cuke_worker', path: '../tef-worker-cuke_worker'
-  gem 'tef-core', path: '../tef-core'
+  gem 'tef-core', path: '../../../tef/gems/tef-core'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff

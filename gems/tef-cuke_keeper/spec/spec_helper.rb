@@ -4,7 +4,10 @@ SimpleCov.command_name 'tef-cuke_keeper-rspec'
 
 require 'tef/cuke_keeper'
 
-require_relative '../../../testing/mocks'
+
+here = File.dirname(__FILE__)
+tef_project_location = "#{here}/../../../../tef"
+require_relative "#{tef_project_location}/testing/mocks"
 include TefTestingMocks
 
 

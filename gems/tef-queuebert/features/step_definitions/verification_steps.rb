@@ -1,4 +1,6 @@
-require_relative '../../../../features/step_definitions/common/verification_steps'
+here = File.dirname(__FILE__)
+tef_project_location = "#{here}/../../../../../tef"
+require_relative "#{tef_project_location}/features/step_definitions/common/verification_steps"
 
 
 Then(/^the following test cases are discovered for "([^"]*)":$/) do |target, expected_test_cases|

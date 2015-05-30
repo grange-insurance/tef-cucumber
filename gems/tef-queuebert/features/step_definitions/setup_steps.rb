@@ -1,4 +1,6 @@
-require_relative '../../../../features/step_definitions/common/setup_steps'
+here = File.dirname(__FILE__)
+tef_project_location = "#{here}/../../../../../tef"
+require_relative "#{tef_project_location}/features/step_definitions/common/setup_steps"
 
 
 Given(/^the following feature file "([^"]*)":$/) do |file_name, file_text|

@@ -3,20 +3,22 @@ SimpleCov.command_name 'tef-queuebert-rspec'
 
 require 'json'
 
-require_relative '../../../spec/common/specs/configured_component_unit_specs'
-require_relative '../../../spec/common/specs/logged_component_unit_specs'
-require_relative '../../../spec/common/specs/logged_component_integration_specs'
-require_relative '../../../spec/common/specs/receiving_component_integration_specs'
-require_relative '../../../spec/common/specs/receiving_component_unit_specs'
-require_relative '../../../spec/common/specs/sending_component_integration_specs'
-require_relative '../../../spec/common/specs/sending_component_unit_specs'
-require_relative '../../../spec/common/specs/service_component_unit_specs'
-require_relative '../../../spec/common/specs/service_component_integration_specs'
+here = File.dirname(__FILE__)
+tef_project_location = "#{here}/../../../../tef"
+require_relative "#{tef_project_location}/spec/common/specs/configured_component_unit_specs"
+require_relative "#{tef_project_location}/spec/common/specs/logged_component_unit_specs"
+require_relative "#{tef_project_location}/spec/common/specs/logged_component_integration_specs"
+require_relative "#{tef_project_location}/spec/common/specs/receiving_component_integration_specs"
+require_relative "#{tef_project_location}/spec/common/specs/receiving_component_unit_specs"
+require_relative "#{tef_project_location}/spec/common/specs/sending_component_integration_specs"
+require_relative "#{tef_project_location}/spec/common/specs/sending_component_unit_specs"
+require_relative "#{tef_project_location}/spec/common/specs/service_component_unit_specs"
+require_relative "#{tef_project_location}/spec/common/specs/service_component_integration_specs"
 
-require_relative '../../../spec/common/custom_matchers'
-require_relative '../../../testing/fakes'
+require_relative "#{tef_project_location}/spec/common/custom_matchers"
+require_relative "#{tef_project_location}/testing/fakes"
 include TefTestingFakes
-require_relative '../../../testing/mocks'
+require_relative "#{tef_project_location}/testing/mocks"
 include TefTestingMocks
 
 require_relative 'mocks'

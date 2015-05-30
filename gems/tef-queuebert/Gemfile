@@ -20,7 +20,7 @@ def dev_gems
 
   # Dev mode has to explicitly include every needed gem dependency in the project in order to
   # be properly (i.e. recursively) loaded from source by Bundler
-  gem 'tef-core', :path => '../tef-core'
+  gem 'tef-core', :path => '../../../tef/gems/tef-core'
   gem 'tef-queuebert', :path => '../tef-queuebert'
 end
 

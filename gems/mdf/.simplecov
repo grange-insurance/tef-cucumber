@@ -1,4 +1,4 @@
-require '../../simplecov_profiles'
+require '../../../tef/simplecov_profiles'
 
 SimpleCov.start do
   load_profile 'tef_basic'
