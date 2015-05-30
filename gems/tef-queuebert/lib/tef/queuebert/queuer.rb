@@ -174,16 +174,18 @@ module TEF
 
         created_tasks = @task_creator.create_tasks_for(meta_data, tests)
 
-        logger.debug('forwarding tasks')
         forward_tasks(created_tasks)
         send_suite_notification(meta_data, created_tasks)
       end
 
       def forward_tasks(tasks)
-        tasks.each do |task|
-          logger.debug("forwarding task: #{task}")
+        logger.debug("Forwarding #{tasks.count} tasks...")
 
-          @out_queue.publish(task.to_json)
+        tasks.each do |task|
+          task_message = task.to_json
+          logger.debug("forwarding task: #{task_message}")
+
+          @out_queue.publish(task_message)
         end
       end
 

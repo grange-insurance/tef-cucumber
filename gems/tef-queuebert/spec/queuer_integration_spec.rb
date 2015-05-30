@@ -256,7 +256,7 @@ describe 'Queuer, Integration' do
       delivery_info = create_mock_delivery_info
       @options[:suite_request_queue] = @fake_publisher
       @options[:logger] = @mock_logger
-      @test_request['directories'] =['not a real directory']
+      @test_request['directories'] = ['not a real directory']
 
 
       clazz.new(@options) # Not using the queuer, just linking it up with the publisher
@@ -267,6 +267,25 @@ describe 'Queuer, Integration' do
       end
 
       expect(@mock_logger).to have_received(:error).with(/there was a problem/i)
+    end
+
+  end
+
+  describe 'task queuing' do
+
+    it 'it logs the tasks that it queues' do
+      delivery_info = create_mock_delivery_info
+      @options[:suite_request_queue] = @fake_publisher
+      @options[:logger] = @mock_logger
+      allow(@mock_task_creator).to receive(:create_tasks_for).and_return([{task_1: 'foo'}, {task_2: 'bar'}])
+
+      clazz.new(@options) # Not using the queuer, just linking it up with the publisher
+
+      @fake_publisher.call(delivery_info, create_mock_properties, @test_request.to_json)
+
+      expect(@mock_logger).to have_received(:debug).with('Forwarding 2 tasks...')
+      expect(@mock_logger).to have_received(:debug).with('forwarding task: {"task_1":"foo"}')
+      expect(@mock_logger).to have_received(:debug).with('forwarding task: {"task_2":"bar"}')
     end
 
   end
