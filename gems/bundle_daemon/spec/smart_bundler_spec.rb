@@ -37,7 +37,7 @@ module BundleDaemon
     it "creates the work folder if it doesn't exist" do
       FileUtils.rm_rf( @cache_dir) if Dir.exists?( @cache_dir)
       SmartBundler.new ( @cache_dir)
-      expect(Dir.exists?( @cache_dir)).to be_true
+      expect(Dir.exists?( @cache_dir)).to be true
     end
 
     it 'returns a working dir for a gemfile' do
@@ -74,7 +74,7 @@ module BundleDaemon
     it 'saves the gemfile hash to a cache file' do
       sb = SmartBundler.new (@cache_dir)
       sb.save_md5_for(@gemfile)
-      File.exists?(sb.cache_file_path(@gemfile)).should be_true
+      File.exists?(sb.cache_file_path(@gemfile)).should be true
       FileUtils.rm_rf(sb.cache_file_path(@gemfile)) if File.exists?(sb.cache_file_path(@gemfile))
     end
 
@@ -94,16 +94,16 @@ module BundleDaemon
       FileUtils.rm_rf(sb.cache_file_path(@gemfile)) if File.exists?(sb.cache_file_path(@gemfile))
 
       # No cache file?  Need a bundle
-      expect( sb.need_bundle?(@gemfile) ).to be_true
+      expect( sb.need_bundle?(@gemfile) ).to be true
 
       # Have cache and lock file?  No bundle
       sb.save_md5_for(@gemfile)
       FileUtils.touch @gemfile_lock
-      expect( sb.need_bundle?(@gemfile) ).to be_false
+      expect( sb.need_bundle?(@gemfile) ).to be false
 
       # No lock file but have a cache?  Need a bundle
       FileUtils.rm_rf(@gemfile_lock) if File.exists?(@gemfile_lock)
-      expect( sb.need_bundle?(@gemfile) ).to be_true
+      expect( sb.need_bundle?(@gemfile) ).to be true
 
       FileUtils.rm_rf(sb.cache_file_path(@gemfile)) if File.exists?(sb.cache_file_path(@gemfile))
     end
@@ -115,7 +115,7 @@ module BundleDaemon
 
       sb.bundle_install(@gemfile)
 
-      expect( File.exists?(@gemfile_lock) ).to be_true
+      expect( File.exists?(@gemfile_lock) ).to be true
       FileUtils.rm_rf(@gemfile_lock) if File.exists?(@gemfile_lock)
     end
 
