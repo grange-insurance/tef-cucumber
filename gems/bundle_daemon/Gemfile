@@ -7,8 +7,6 @@ def testing_gems
   gem 'rake'
   gem 'rspec'
   gem 'simplecov'
-  gem 'pry'
-  gem 'pry-byebug'
   gem 'eventmachine'
   gem 'uuidtools'
 end
