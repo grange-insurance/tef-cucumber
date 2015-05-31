@@ -1,41 +1,10 @@
-require 'cucumber/rake/task'
-require 'rspec/core/rake_task'
-
-# todo - reduce this duplication
-def set_cucumber_options(options)
-  ENV['CUCUMBER_OPTS'] = options
-end
-
-def combine_options(set_1, set_2)
-  set_2 ? "#{set_1} #{set_2}" : set_1
-end
+require 'racatt'
 
 
 namespace 'tef' do
   namespace 'queuebert' do
 
-    namespace 'cucumber' do
-      desc 'Run all tests for queuebert'
-      task :tests, [:command_options] do |t, args|
-        set_cucumber_options(combine_options('-t ~@wip -t ~@off', args[:command_options]))
-      end
-      Cucumber::Rake::Task.new(:tests)
-    end
-
-    namespace 'rspec' do
-      desc 'Run all specifications for queuebert'
-      RSpec::Core::RakeTask.new(:specs, :command_options) do |t, args|
-        t.rspec_opts = '--tag ~wip '
-        t.rspec_opts << args[:command_options] if args[:command_options]
-      end
-    end
-
-    desc 'Run everything for queuebert'
-    task :test_everything, [:command_options] do |t, args|
-      Rake::Task['tef:queuebert:rspec:specs'].invoke(args[:command_options])
-      Rake::Task['tef:queuebert:cucumber:tests'].invoke(args[:command_options])
-    end
-
+    Racatt.create_tasks
 
     task :default => :test_everything
   end
