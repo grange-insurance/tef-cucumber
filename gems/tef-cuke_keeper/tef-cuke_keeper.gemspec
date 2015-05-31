@@ -24,8 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'      , '~> 3.0'
   spec.add_development_dependency 'rspec-wait' , '= 0.0.2'
   spec.add_development_dependency 'simplecov', '~> 0.9'
-  spec.add_development_dependency 'pry', '~> 0.10'
-  spec.add_development_dependency 'pry-byebug', '~> 3.1'
   spec.add_development_dependency 'database_cleaner', '~> 1.4'
 
   spec.add_dependency 'tiny_tds',                       '~> 0.6'

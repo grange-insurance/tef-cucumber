@@ -3,8 +3,6 @@ source 'http://rubygems.org'
 
 # The gems that we use to test our stuff
 def testing_gems
-  gem 'pry'
-  gem 'pry-debugger'
   gem 'rake'
   gem 'rspec', '~> 3.0.0'
   gem 'rspec-wait', '= 0.0.2'

@@ -21,7 +21,6 @@ module TEF
     suite_guid ||= '123'
     suite = Models::TestSuite.where('guid = ?', suite_guid).first
 
-    require 'pry'; binding.pry
     if file_data[:task_data][:results].class == String
       puts "Task errored #{file_data[:task_data][:results]}"
       return true

@@ -18,7 +18,7 @@ module BundleDaemon
   bunny_url = ENV[bunny_env_name]
   bunny_username = ENV[bunny_env_user]
   bunny_password = ENV[bunny_env_password]
-  #require 'pry'; binding.pry
+
   unless bunny_url
     puts "No URL found, have you defined #{bunny_env_name}"
     exit 1

@@ -96,7 +96,6 @@ module BundleDaemon
 
     def bundle_install(gemfile_path)
       logger.info("Install in #{gemfile_path}")
-      #require 'pry'; binding.pry
       return true unless need_bundle?(gemfile_path)
 
       with_new_wd(gemfile_path) do |new_dir|
@@ -106,12 +105,11 @@ module BundleDaemon
 
         with_bundler_safe_env do
           stdout, stderr, status = Open3.capture3("bundle install --no-cache --gemfile #{gemfile_path}")
-          #require 'pry'; binding.pry
-		  logger.error("\n\n#{stdout}\n\n#{stderr}\n") unless status.success?
+          logger.error("\n\n#{stdout}\n\n#{stderr}\n") unless status.success?
         end
 
         logger.error("Bundle install failed in #{new_dir}") unless status.success?
-		
+
         logger.info("Bundle install in #{new_dir} done") if status.success?
         status.success?
       end
