@@ -6,7 +6,7 @@ namespace 'tef' do
 
     desc 'Bundle install on all parts of the framework'
     task :bundle_framework, [:mode] do |t, args|
-      component_locations.values.each do |location|
+      TEF::Cucumber.component_locations.values.each do |location|
         puts "bundle installing #{location}"
         puts "with args: #{args.inspect}"
 
