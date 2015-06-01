@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'fileutils'
 
 module BundleDaemon
-  TEST_GEMFILE_MD5 = '22881b52ae75028fd36a1a8ea4c23ae7'
+  TEST_GEMFILE_MD5 = '4f6f7ba88be0d29fdb7b955dc341f593'
 
   describe SmartBundler do
 
