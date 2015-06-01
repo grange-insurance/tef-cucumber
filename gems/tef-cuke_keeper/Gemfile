@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'pry'
+gem 'pry-debugger'
 
 # The gems that we use to test our stuff
 def testing_gems
@@ -9,6 +11,7 @@ def testing_gems
   gem 'cucumber'
   gem 'simplecov'
   gem 'database_cleaner'
+  gem 'timecop'
 end
 
 # The development (i.e. source code) versions of gems that are (or are needed by) our stuff

@@ -1,6 +1,8 @@
 require 'simplecov'
 SimpleCov.command_name 'tef-cuke_keeper-rspec'
 
+require 'timecop'
+
 
 require 'tef/cuke_keeper'
 

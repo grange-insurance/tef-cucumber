@@ -30,6 +30,15 @@ describe 'CukeKeeper.callback, Integration' do
     @mock_logger = create_mock_logger
   end
 
+
+  before(:each) do
+    Timecop.freeze
+  end
+
+  after(:each)do
+    Timecop.return
+  end
+
   after(:each) do
     DatabaseCleaner.clean
   end
