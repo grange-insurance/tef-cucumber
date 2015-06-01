@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'pry'
 gem 'pry-debugger'
@@ -18,7 +18,7 @@ end
 def dev_gems
   gem 'tiny_tds', '~> 0.6'
   gem 'activerecord', '~> 4.1'
-  gem 'activerecord-sqlserver-adapter', '~> 4.1'
+  gem 'activerecord-sqlserver-adapter', '~> 4.2.4'
 
   # Dev mode has to explicitly include every needed gem dependency in the project in order to
   # be properly (i.e. recursively) loaded from source by Bundler
@@ -32,7 +32,7 @@ end
 def test_gems
   gem 'tiny_tds', '~> 0.6'
   gem 'activerecord', '~> 4.1'
-  gem 'activerecord-sqlserver-adapter', '~> 4.1'
+  gem 'activerecord-sqlserver-adapter', '~> 4.2.4'
   gem 'tef-core'
   gem 'tef-keeper'
   gem 'text-table'
