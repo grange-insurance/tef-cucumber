@@ -22,6 +22,13 @@ describe 'CukeKeeper.callback, Integration' do
     DatabaseCleaner.start
   end
 
+  before(:each) do
+    Timecop.freeze
+  end
+
+  after(:each) do
+    Timecop.return
+  end
 
   before(:each) do
     @test_suite_creation_payload = {type: 'suite_creation', suite_guid: 'test suite foo', requested_time: DateTime.now.to_json, task_ids: ['1']}
