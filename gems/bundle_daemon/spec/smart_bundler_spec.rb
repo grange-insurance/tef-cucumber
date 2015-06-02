@@ -2,15 +2,16 @@ require 'spec_helper'
 require 'fileutils'
 
 module BundleDaemon
-  TEST_GEMFILE_MD5 = '4f6f7ba88be0d29fdb7b955dc341f593'
 
   describe SmartBundler do
 
-    before(:each) {
+    before(:all) {
       @cache_dir = '~/.gem/sb_test'
       @test_data_dir = File.join( Dir.pwd, 'spec/test_data')
       @gemfile = "#{@test_data_dir}/gemfile"
       @gemfile_lock = "#{@test_data_dir}/gemfile.lock"
+
+      TEST_GEMFILE_MD5 = Digest::MD5.file(@gemfile).hexdigest
     }
 
     after(:each) {
@@ -63,7 +64,11 @@ module BundleDaemon
 
     it 'calculates a hash for the gemfile' do
       sb = SmartBundler.new (@cache_dir)
-      expect( sb.current_md5_for(@gemfile)).to eq TEST_GEMFILE_MD5
+
+      file_hash = sb.current_md5_for(@gemfile)
+
+      expect(file_hash).to match(/[a-z0-9]{32}/)
+      expect(file_hash).to eq TEST_GEMFILE_MD5
     end
 
     it 'generates a cache filename based off the gemfile' do
