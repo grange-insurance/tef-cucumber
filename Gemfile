@@ -32,6 +32,7 @@ def dev_gems
   gem 'tef-cuke_keeper', :path => 'gems/tef-cuke_keeper'
 #   # gem 'mdf', :path => 'gems/mdf'
 #   gem 'tef', :path => '.'
+  gem 'tef-development', :path => '../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
@@ -41,6 +42,7 @@ def test_gems
   gem 'tef-manager'
   gem 'tef-cuke_keeper'
   gem 'tef-cucumber'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.

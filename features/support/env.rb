@@ -9,7 +9,8 @@ require 'rspec/wait'
 include RSpec::Wait
 
 # Common testing code
-require_relative '../../../tef/testing/helper_methods'
+require 'tef/development'
+World(TEF::Development)
 
 
 require 'tef/cucumber'

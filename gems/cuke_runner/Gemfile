@@ -19,6 +19,7 @@ def dev_gems
   # be properly (i.e. recursively) loaded from source by Bundler
   gem 'task_runner', :path => '../../../tef/gems/task_runner'
   gem 'cuke_runner', path: '../cuke_runner'
+  gem 'tef-development', :path => '../../../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
@@ -26,6 +27,7 @@ def test_gems
   gem 'task_runner'
   gem 'cuke_commander', '~> 1.0'
   gem 'cuke_runner'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.

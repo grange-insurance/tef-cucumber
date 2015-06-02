@@ -13,12 +13,14 @@ end
 def dev_gems
   gem 'cucumber', '~> 2.0'
   gem 'mdf', path: '../mdf'
+  gem 'tef-development', :path => '../../../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
 def test_gems
   gem 'cucumber', '~> 2.0'
   gem 'mdf'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.

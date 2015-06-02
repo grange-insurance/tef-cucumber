@@ -14,11 +14,13 @@ end
 # The development (i.e. source code) versions of gems that are (or are needed by) our stuff
 def dev_gems
   gem 'bundle_daemon', path: '../bundle_daemon'
+  gem 'tef-development', :path => '../../../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
 def test_gems
   gem 'bundle_daemon'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.

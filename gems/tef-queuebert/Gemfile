@@ -21,6 +21,7 @@ def dev_gems
   # be properly (i.e. recursively) loaded from source by Bundler
   gem 'tef-core', :path => '../../../tef/gems/tef-core'
   gem 'tef-queuebert', :path => '../tef-queuebert'
+  gem 'tef-development', :path => '../../../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
@@ -30,6 +31,7 @@ def test_gems
 
   gem 'tef-core'
   gem 'tef-queuebert'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.

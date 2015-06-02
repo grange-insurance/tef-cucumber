@@ -25,6 +25,7 @@ def dev_gems
   gem 'tef-worker', path: '../../../tef/gems/tef-worker'
   gem 'tef-worker-cuke_worker', path: '../tef-worker-cuke_worker'
   gem 'tef-core', path: '../../../tef/gems/tef-core'
+  gem 'tef-development', :path => '../../../tef/gems/tef-development'
 end
 
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
@@ -36,6 +37,7 @@ def test_gems
   gem 'cuke_runner'
   gem 'tef-worker'
   gem 'tef-worker-cuke_worker'
+  gem 'tef-development'
 end
 
 # Nothing new to see here.
