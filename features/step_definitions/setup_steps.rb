@@ -1,6 +1,4 @@
-here = File.dirname(__FILE__)
-tef_project_location = "#{here}/../../../tef"
-require_relative "#{tef_project_location}/features/step_definitions/common/setup_steps"
+require 'tef/development/step_definitions/setup_steps'
 
 
 Given(/^a queuebert node is running$/) do
