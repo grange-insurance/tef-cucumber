@@ -1,3 +1,6 @@
+require 'tef/development/common_tasks'
+
+
 module TEF
   module Cucumber
     def self.component_locations
@@ -12,15 +15,4 @@ module TEF
       }
     end
   end
-end
-
-namespace 'tef' do
-
-  task :set_environment do
-    ENV['TEF_ENV'] ||= 'dev'
-    ENV['TEF_AMQP_URL_DEV'] ||= 'amqp://localhost:5672'
-    ENV['TEF_AMQP_USER_DEV'] ||= 'guest'
-    ENV['TEF_AMQP_PASSWORD_DEV'] ||= 'guest'
-  end
-
 end
