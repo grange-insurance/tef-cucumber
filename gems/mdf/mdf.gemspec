@@ -6,8 +6,8 @@ require 'mdf/version'
 Gem::Specification.new do |spec|
   spec.name          = 'mdf'
   spec.version       = MDF::VERSION
-  spec.authors       = ["Donavan"]
-  spec.email         = ["jdonavan@jdonavan.com"]
+  spec.authors       = ['Donavan Stanley', 'Eric Kessler']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{JSON formatter for cucumber, which includes metadata.}
   spec.description   = %q{JSON formatter for cucumber, which includes metadata.  Part of the TEF project.}
   spec.homepage      = "https://github.com/orgs/grange-insurance"

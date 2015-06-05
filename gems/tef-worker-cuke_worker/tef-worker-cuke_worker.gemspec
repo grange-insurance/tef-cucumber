@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'tef-worker-cuke_worker'
   spec.version       = TEF::Worker::Cucumber::VERSION
   spec.authors       = ['Donavan Stanley', 'Eric Kessler']
-  spec.email         = ['stanleyd@grangeinsurance.com']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{The worker specializing in working cucumber tasks}
   spec.description   = %q{A cucumber task worker.}
   spec.homepage      = 'https://github.com/orgs/grange-insurance'

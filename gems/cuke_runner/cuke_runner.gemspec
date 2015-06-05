@@ -6,8 +6,8 @@ require 'cuke_runner/version'
 Gem::Specification.new do |spec|
   spec.name          = 'cuke_runner'
   spec.version       = CukeRunner::VERSION
-  spec.authors       = ['Donavan Stanley']
-  spec.email         = ['stanleyd@grangeinsurance.com']
+  spec.authors       = ['Donavan Stanley', 'Eric Kessler']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{Run cucumber based off of JSON data}
   spec.description   = %q{Run cucumber based off of JSON data. Part of the TEF project}
   spec.homepage      = 'https://github.com/orgs/grange-insurance'

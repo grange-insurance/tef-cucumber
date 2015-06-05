@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'tef-queuebert'
   spec.version       = TEF::Queuebert::VERSION
   spec.authors       = ['Donavan Stanley', 'Eric Kessler']
-  spec.email         = ['stanleyd@grangeinsurance.com']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{The queueing portion of the TEF}
   spec.description   = %q{It makes queueing Cucumber tasks easy.}
   spec.homepage      = 'https://github.com/orgs/grange-insurance'

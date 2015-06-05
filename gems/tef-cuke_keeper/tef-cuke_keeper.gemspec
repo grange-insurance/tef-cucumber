@@ -6,8 +6,8 @@ require 'tef/cuke_keeper/version'
 Gem::Specification.new do |spec|
   spec.name          = 'tef-cuke_keeper'
   spec.version       = TEF::CukeKeeper::VERSION
-  spec.authors       = ['Donavan', 'Eric Kessler']
-  spec.email         = ['donavan.stanley@grangeinsurance.com']
+  spec.authors       = ['Donavan Stanley', 'Eric Kessler']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{A TEF keeper that specializes in cucumber task results.}
   spec.description   = %q{Part of the TEF project}
   spec.homepage      = 'https://github.com/orgs/grange-insurance'

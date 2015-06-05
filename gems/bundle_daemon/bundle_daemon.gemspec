@@ -6,8 +6,8 @@ require 'bundle_daemon/version'
 Gem::Specification.new do |spec|
   spec.name          = 'bundle_daemon'
   spec.version       = BundleDaemon::VERSION
-  spec.authors       = ['Donavan Stanley']
-  spec.email         = ['stanleyd@grangeinsurance.com']
+  spec.authors       = ['Donavan Stanley', 'Eric Kessler']
+  spec.email         = ['donavan.stanley@gmail.com', 'morrow748@gmail.com']
   spec.summary       = %q{A daemon to run bundle installs.}
   spec.description   = %q{See summary.}
   spec.homepage      = 'https://github.com/orgs/grange-insurance'
