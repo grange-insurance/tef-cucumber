@@ -10,12 +10,10 @@ include RSpec::Wait
 
 require 'tef/queuebert'
 
-here = File.dirname(__FILE__)
-tef_project_location = "#{here}/../../../../../tef"
-require_relative "#{tef_project_location}/testing/fakes"
-World(TefTestingFakes)
-require_relative "#{tef_project_location}/testing/mocks"
-World(TefTestingMocks)
+require 'tef/development/testing/fakes'
+World(TEF::Development::Testing::Fakes)
+require 'tef/development/testing/mocks'
+World(TEF::Development::Testing::Mocks)
 
 
 ENV['TEF_ENV'] ||= 'dev'

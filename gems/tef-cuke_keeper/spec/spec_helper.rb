@@ -7,10 +7,9 @@ require 'timecop'
 require 'tef/cuke_keeper'
 
 
-here = File.dirname(__FILE__)
-tef_project_location = "#{here}/../../../../tef"
-require_relative "#{tef_project_location}/testing/mocks"
-include TefTestingMocks
+require 'tef/development/testing/mocks'
+include TEF::Development::Testing::Mocks
+
 
 
 def tef_env

@@ -2,16 +2,14 @@ require 'simplecov'
 SimpleCov.command_name 'tef-worker-cuke_worker-rspec'
 
 
-here = File.dirname(__FILE__)
-tef_project_location = "#{here}/../../../../tef"
-require_relative "#{tef_project_location}/spec/common/specs/configured_component_unit_specs"
-require_relative "#{tef_project_location}/spec/common/specs/logged_component_unit_specs"
-require_relative "#{tef_project_location}/spec/common/specs/logged_component_integration_specs"
-require_relative "#{tef_project_location}/spec/common/specs/worker_component_unit_specs"
-require_relative "#{tef_project_location}/spec/common/specs/worker_component_integration_specs"
+require 'tef/development/specs/configured_component_unit_specs'
+require 'tef/development/specs/logged_component_unit_specs'
+require 'tef/development/specs/logged_component_integration_specs'
+require 'tef/development/specs/worker_component_unit_specs'
+require 'tef/development/specs/worker_component_integration_specs'
 
-require_relative "#{tef_project_location}/testing/mocks"
-include TefTestingMocks
+require 'tef/development/testing/mocks'
+include TEF::Development::Testing::Mocks
 
 
 require 'tef/worker/cuke_worker'
