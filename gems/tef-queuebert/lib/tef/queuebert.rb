@@ -9,7 +9,7 @@ require 'tef/queuebert/tasking'
 
 module TEF
   module Queuebert
-    class Queuebert < TEF::TefComponent
+    class Queuebert < Core::TefComponent
 
       attr_reader :logger, :suite_request_queue_name, :manager_queue_name, :keeper_queue_name
 
