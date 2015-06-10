@@ -11,7 +11,6 @@ def testing_gems
   gem 'simplecov'
 #   gem 'bundler', '~> 1.6'
   gem 'bunny', '~> 1.4'
-  gem 'sys-proctable'
   gem 'database_cleaner'
   gem 'timecop'
 end

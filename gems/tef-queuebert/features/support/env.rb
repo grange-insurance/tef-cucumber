@@ -10,6 +10,10 @@ include RSpec::Wait
 
 require 'tef/queuebert'
 
+# Common testing code
+require 'tef/development'
+World(TEF::Development)
+
 require 'tef/development/testing/fakes'
 World(TEF::Development::Testing::Fakes)
 require 'tef/development/testing/mocks'
@@ -70,13 +74,4 @@ end
 def process_filter(filter)
   filter = process_path(filter)
   filter =~ /^\/.+\/$/ ? Regexp.new(filter.slice(1..-2)) : filter
-end
-
-# This seems like something that Bunny should already have...
-def get_queue(queue_name)
-  @bunny_channel.queue(queue_name, passive: true)
-end
-
-def delete_queue(queue_name)
-  @bunny_channel.queue_delete(queue_name)
 end
