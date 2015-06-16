@@ -8,27 +8,31 @@ require 'bunny'
 require 'rspec/wait'
 include RSpec::Wait
 
+RSpec.configure do |config|
+  config.wait_timeout = 30
+end
+
 # Common testing code
 require 'tef/development'
 World(TEF::Development)
 
-
-require 'tef/cucumber'
-
-
-ENV['TEF_ENV'] ||= 'dev'
-ENV['TEF_AMQP_URL_DEV'] ||= 'amqp://localhost:5672'
-
-TEF::CukeKeeper::init_db
-
-RSpec.configure do |config|
-  config.wait_timeout = 30
-end
+require 'tef/development/testing/database'
+TEF::Development::Testing.connect_to_test_db
 
 require 'database_cleaner'
 DatabaseCleaner.strategy = :truncation, {only: %w(keeper_dev_features keeper_dev_scenarios keeper_dev_test_suites tef_dev_tasks tef_dev_task_resources)}
 DatabaseCleaner.start
 DatabaseCleaner.clean
+
+
+require 'tef/cucumber'
+
+# Still need to call the CukeKeeper's initialization method in order to set the table_prefixes correctly
+TEF::CukeKeeper::init_db
+
+
+ENV['TEF_ENV'] ||= 'dev'
+ENV['TEF_AMQP_URL_DEV'] ||= 'amqp://localhost:5672'
 
 
 Before do
