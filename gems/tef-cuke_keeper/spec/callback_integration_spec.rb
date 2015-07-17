@@ -6,7 +6,7 @@ describe 'CukeKeeper.callback, Integration' do
 
   nodule = TEF::CukeKeeper
 
-  suite_attributes = [:owner, :requested_time, :name, :env, :complete]
+  suite_attributes = [:requested_time, :name, :complete]
 
   before(:all) do
     ActiveRecord::Base.time_zone_aware_attributes = true
@@ -98,9 +98,7 @@ describe 'CukeKeeper.callback, Integration' do
           # Completion gets determined elsewhere
           unless attribute == :complete
             it "stores the '#{attribute}' when it creates a suite record" do
-              values = {owner: 'bar',
-                        name: 'bar',
-                        env: 'bar',
+              values = {name: 'bar',
                         requested_time: (DateTime.now + 7).to_json
               }
 
@@ -197,8 +195,8 @@ describe 'CukeKeeper.callback, Integration' do
             end
 
             it "does not update the existing '#{attribute}' of the record if new data for that part is not provided" do
-              old_data = {owner: 'foo', name: 'foo', env: 'foo', requested_time: DateTime.now}
-              new_data = {owner: 'bar', name: 'bar', env: 'bar', requested_time: (DateTime.now + 7).to_json}
+              old_data = {name: 'foo', requested_time: DateTime.now}
+              new_data = {name: 'bar', requested_time: (DateTime.now + 7).to_json}
 
               suite_guid = 'existing test suite guid'
               suite = TEF::CukeKeeper::Models::TestSuite.new(old_data.merge(guid: suite_guid))
@@ -271,20 +269,6 @@ describe 'CukeKeeper.callback, Integration' do
         expect(TEF::CukeKeeper::Models::Scenario.find_by(task_guid: '1').suite_guid).to eq('test suite foo')
         expect(TEF::CukeKeeper::Models::Scenario.find_by(task_guid: '2').suite_guid).to_not eq('test suite foo')
         expect(TEF::CukeKeeper::Models::Scenario.find_by(task_guid: '3').suite_guid).to eq('test suite foo')
-      end
-
-      it 'associates existing feature records with the created suite if their suite guid matches the created suite' do
-        TEF::CukeKeeper::Models::Feature.new(suite_guid: 'test suite 1', test_suite_id: nil, id: 1, name: 'foo', filename: 'foo').save
-        TEF::CukeKeeper::Models::Feature.new(suite_guid: 'test suite 2', test_suite_id: nil, id: 2, name: 'bar', filename: 'bar').save
-        TEF::CukeKeeper::Models::Feature.new(suite_guid: 'test suite 1', test_suite_id: nil, id: 3, name: 'baz', filename: 'baz').save
-
-        @test_suite_creation_payload[:suite_guid] = 'test suite 1'
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, @test_suite_creation_payload, create_mock_logger)
-
-        saved_suite_id = TEF::CukeKeeper::Models::TestSuite.find_by(guid: 'test suite 1').id
-        expect(TEF::CukeKeeper::Models::Feature.find_by(id: 1).test_suite_id).to eq(saved_suite_id)
-        expect(TEF::CukeKeeper::Models::Feature.find_by(id: 2).test_suite_id).to_not eq(saved_suite_id)
-        expect(TEF::CukeKeeper::Models::Feature.find_by(id: 3).test_suite_id).to eq(saved_suite_id)
       end
 
       it 'checks to see if the suite is completed when it is created (complete)' do

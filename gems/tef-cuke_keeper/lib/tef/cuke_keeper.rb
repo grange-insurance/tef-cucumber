@@ -64,7 +64,6 @@ module TEF
       suite = suite_model_for(suite_guid)
 
       suite_data = {requested_time: payload[:requested_time],
-                    owner: payload[:owner],
                     name: payload[:name],
                     env: payload[:env],
                     complete: payload[:complete],
@@ -88,9 +87,7 @@ module TEF
     def self.create_suite_model(suite_guid, suite_data)
       suite = Models::TestSuite.new
       suite.guid = suite_guid
-      suite.owner = suite_data[:owner]
       suite.name = suite_data[:name]
-      suite.env = suite_data[:env]
       suite.complete = suite_data[:complete] || false
 
       time = suite_data[:requested_time] || DateTime.now.to_s
@@ -104,7 +101,6 @@ module TEF
     def self.update_suite_model(suite_guid, suite_data)
       suite = suite_model_for(suite_guid)
 
-      suite.owner = suite_data[:owner] unless suite_data[:owner].nil?
       suite.name = suite_data[:name] unless suite_data[:name].nil?
       suite.env = suite_data[:env] unless suite_data[:env].nil?
       suite.complete = suite_data[:complete] unless suite_data[:complete].nil?
@@ -164,7 +160,7 @@ module TEF
 
 
       scenario_model.name = parsed_scenario.name
-      scenario_model.filename = "#{parsed_feature.path}:#{parsed_scenario.line_no}"
+      scenario_model.line_number = parsed_scenario.line_no
       scenario_model.steps = parsed_scenario.step_text
       scenario_model.status = parsed_scenario.passed? ? 'pass' : 'fail'
       scenario_model.exception = parsed_scenario.error_message unless parsed_scenario.passed?
@@ -178,12 +174,6 @@ module TEF
     end
 
     def self.associate_saved_results(suite_guid, task_ids)
-      unassociated_features = Models::Feature.where('suite_guid = :suite_guid and test_suite_id is NULL', suite_guid: suite_guid)
-      associated_suite = suite_model_for(suite_guid)
-
-      # May need to update in chunks if doing too many at once
-      unassociated_features.update_all(test_suite_id: associated_suite.id)
-
       associated_scenarios = Models::Scenario.where('task_guid in (:task_guids)', task_guids: task_ids)
       associated_scenarios.update_all(suite_guid: suite_guid)
     end
@@ -249,7 +239,6 @@ module TEF
       feature_model.suite_guid = suite_guid
       feature_model.filename = parsed_feature.path
       feature_model.name = parsed_feature.name
-      feature_model.test_suite = suite_model_for(suite_guid) # Could be nil
       feature_model.save
 
       feature_model
