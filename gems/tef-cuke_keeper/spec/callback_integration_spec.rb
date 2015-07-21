@@ -6,7 +6,11 @@ describe 'CukeKeeper.callback, Integration' do
 
   nodule = TEF::CukeKeeper
 
-  suite_attributes = [:requested_time, :name, :complete]
+  # Specs will be dynamically created for all of these attributes
+  suite_attributes = [:requested_time, :name, :complete, :finished_time, :guid]
+  feature_attributes = [:name, :filename, :suite_guid]
+  scenario_attributes = [:done, :end_time, :exception, :feature_id, :line_number, :name, :runtime, :status, :steps, :suite_guid, :task_guid]
+
 
   before(:all) do
     ActiveRecord::Base.time_zone_aware_attributes = true
@@ -42,7 +46,7 @@ describe 'CukeKeeper.callback, Integration' do
     Timecop.freeze
   end
 
-  after(:each)do
+  after(:each) do
     Timecop.return
   end
 
@@ -50,6 +54,30 @@ describe 'CukeKeeper.callback, Integration' do
     DatabaseCleaner.clean
   end
 
+  describe 'safety measures so that no one forgets to add tests for new data' do
+
+    it 'should have tests for every tracked test suite attribute' do
+      current_columns = TEF::CukeKeeper::Models::TestSuite.column_names.map { |name| name.to_sym }
+      current_columns.delete(:id)
+
+      expect(current_columns).to match_array(suite_attributes)
+    end
+
+    it 'should have tests for every tracked feature attribute' do
+      current_columns = TEF::CukeKeeper::Models::Feature.column_names.map { |name| name.to_sym }
+      current_columns.delete(:id)
+
+      expect(current_columns).to match_array(feature_attributes)
+    end
+
+    it 'should have tests for every tracked test attribute' do
+      current_columns = TEF::CukeKeeper::Models::Scenario.column_names.map { |name| name.to_sym }
+      current_columns.delete(:id)
+
+      expect(current_columns).to match_array(scenario_attributes)
+    end
+
+  end
 
   describe 'message handling' do
 
@@ -60,6 +88,12 @@ describe 'CukeKeeper.callback, Integration' do
     end
 
     describe 'suite creation message handling' do
+
+      let(:request_name_for) { {guid: :suite_guid,
+                                name: :name,
+                                requested_time: :requested_time,
+                                finished_time: :finished_time} }
+
 
       it "knows how to handle payloads of type 'suite_creation'" do
         nodule.callback.call(create_mock_delivery_info, create_mock_properties, @test_suite_creation_payload, @mock_logger)
@@ -99,18 +133,20 @@ describe 'CukeKeeper.callback, Integration' do
           unless attribute == :complete
             it "stores the '#{attribute}' when it creates a suite record" do
               values = {name: 'bar',
-                        requested_time: (DateTime.now + 7).to_json
+                        requested_time: (DateTime.now + 7).to_json,
+                        suite_guid: 'test suite 54321'
               }
 
+              request_attribute = request_name_for[attribute]
 
-              @test_suite_creation_payload[attribute] = values[attribute]
+              @test_suite_creation_payload[request_attribute] = values[request_attribute]
               nodule.callback.call(create_mock_delivery_info, create_mock_properties, @test_suite_creation_payload, create_mock_logger)
 
 
               if attribute == :requested_time
                 expect(TEF::CukeKeeper::Models::TestSuite.first.send(attribute).to_i).to eq(DateTime.parse(values[attribute]).to_i)
               else
-                expect(TEF::CukeKeeper::Models::TestSuite.first.send(attribute)).to eq(values[attribute])
+                expect(TEF::CukeKeeper::Models::TestSuite.first.send(attribute)).to eq(values[request_attribute])
               end
             end
           end
@@ -167,13 +203,14 @@ describe 'CukeKeeper.callback, Integration' do
 
         suite_attributes.each do |attribute|
 
-          # Completion gets determined elsewhere
-          unless attribute == :complete
+          # Completion gets determined elsewhere and if the guid is different then you aren't updating the same suite anyway
+          unless [:complete, :guid].include?(attribute)
             it "updates the existing record with the new '#{attribute}' if a record already exists for the created suite" do
               values = {owner: {old: 'foo', new: 'bar'},
                         name: {old: 'foo', new: 'bar'},
                         env: {old: 'foo', new: 'bar'},
-                        requested_time: {old: DateTime.now, new: (DateTime.now + 7).to_json}
+                        requested_time: {old: DateTime.now, new: (DateTime.now + 7).to_json},
+                        finished_time: {old: DateTime.now, new: (DateTime.now + 7).to_json}
 
               }[attribute]
 
@@ -187,7 +224,7 @@ describe 'CukeKeeper.callback, Integration' do
               nodule.callback.call(create_mock_delivery_info, create_mock_properties, @test_suite_creation_payload, create_mock_logger)
 
 
-              if attribute == :requested_time
+              if [:requested_time, :finished_time].include?(attribute)
                 expect(TEF::CukeKeeper::Models::TestSuite.find_by(guid: suite_guid).send(attribute).to_i).to eq(DateTime.parse(values[:new]).to_i)
               else
                 expect(TEF::CukeKeeper::Models::TestSuite.find_by(guid: suite_guid).send(attribute)).to eq(values[:new])

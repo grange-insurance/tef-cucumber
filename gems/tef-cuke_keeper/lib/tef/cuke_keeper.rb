@@ -64,6 +64,7 @@ module TEF
       suite = suite_model_for(suite_guid)
 
       suite_data = {requested_time: payload[:requested_time],
+                    finished_time: payload[:finished_time],
                     name: payload[:name],
                     env: payload[:env],
                     complete: payload[:complete],
@@ -105,6 +106,7 @@ module TEF
       suite.env = suite_data[:env] unless suite_data[:env].nil?
       suite.complete = suite_data[:complete] unless suite_data[:complete].nil?
       suite.requested_time = DateTime.parse(suite_data[:requested_time]) unless suite_data[:requested_time].nil?
+      suite.finished_time = DateTime.parse(suite_data[:finished_time]) unless suite_data[:finished_time].nil?
 
       suite.save
 
