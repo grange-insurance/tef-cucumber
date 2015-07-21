@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'tef-core', '~> 0'
   spec.add_dependency 'tef-keeper', '~> 0'
   spec.add_dependency 'text-table', '~> 1.2'
+  spec.add_dependency 'racatt'
 end

@@ -12,6 +12,7 @@ def testing_gems
   gem 'simplecov'
   gem 'database_cleaner'
   gem 'timecop'
+  gem 'racatt'
 end
 
 # The development (i.e. source code) versions of gems that are (or are needed by) our stuff
