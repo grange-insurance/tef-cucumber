@@ -14,15 +14,6 @@ module TEF
     def self.callback
       lambda { |delivery_info, properties, payload, logger|
 
-        # # TODO: Remove this before release
-        # filename = "./res_#{payload[:guid]}.json"
-        # logger.debug "Dumping payload to file: #{File.expand_path(filename)}"
-        # File.open(filename, 'w') do |f|
-        #   f.write(JSON.generate(payload))
-        # end
-        # # END_TODO
-
-
         case payload[:type]
           when 'task'
             handle_task_message(delivery_info, properties, payload, logger)
@@ -144,32 +135,24 @@ module TEF
 
       json_results = json_match[1]
 
-      CucumberJsonParser.new(json_results)
+      parser = CucumberJsonParser.new(json_results)
+
+      {feature: parser.features.first, scenario: parser.features.first.scenarios.first}
     end
 
     def self.save_task_result(task_hash, logger)
       parsed_result = parse_result(task_hash, logger)
-      parsed_feature = parsed_result.features.first
-      parsed_scenario = parsed_feature.scenarios.first
 
-      # A placeholder record may or may not have already been created depending on message timing.
-      scenario_model = scenario_model_for(task_hash[:guid]) || Models::Scenario.new
+      scenario_model = get_scenario_model_for(task_hash[:guid])
 
-      suite_guid = task_hash[:suite_guid]
-
-      associated_feature = feature_model_for(parsed_feature, suite_guid) || create_feature_model_for(parsed_feature, suite_guid)
-      scenario_model.feature = associated_feature
-
-
-      scenario_model.name = parsed_scenario.name
-      scenario_model.line_number = parsed_scenario.line_no
-      scenario_model.steps = parsed_scenario.step_text
-      scenario_model.status = parsed_scenario.passed? ? 'pass' : 'fail'
-      scenario_model.exception = parsed_scenario.error_message unless parsed_scenario.passed?
+      scenario_model.feature = get_associated_feature(parsed_result[:feature], task_hash[:suite_guid])
+      scenario_model.name = parsed_result[:scenario].name
+      scenario_model.line_number = parsed_result[:scenario].line_no
+      scenario_model.steps = parsed_result[:scenario].step_text
+      scenario_model.status = parsed_result[:scenario].passed? ? 'pass' : 'fail'
+      scenario_model.exception = parsed_result[:scenario].error_message unless parsed_result[:scenario].passed?
       scenario_model.task_guid = task_hash[:guid]
       scenario_model.suite_guid = task_hash[:suite_guid]
-
-      #todo - will need to not always be the case when requeing tasks is working
       scenario_model.done = true
 
       scenario_model.save
@@ -217,6 +200,15 @@ module TEF
       associated_suite.complete = unfinished_scenarios.empty?
 
       associated_suite.save
+    end
+
+    def self.get_associated_feature(parsed_feature, suite_guid)
+      feature_model_for(parsed_feature, suite_guid) || create_feature_model_for(parsed_feature, suite_guid)
+    end
+
+    def self.get_scenario_model_for(task_guid)
+      # A placeholder record may or may not have already been created depending on message timing.
+      scenario_model_for(task_guid) || Models::Scenario.new
     end
 
     def self.suite_model_for(suite_guid)
