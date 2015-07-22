@@ -389,6 +389,31 @@ describe 'CukeKeeper.callback, Integration' do
 
     end
 
+    describe 'suite update message handling' do
+
+      it 'should do something' do
+        skip('Finish me')
+      end
+
+    end
+
+    describe 'task message handling' do
+
+      feature_attributes.each do |attribute|
+        it "#{attribute} still needs to be tested" do
+          skip('Finish me')
+        end
+      end
+
+      scenario_attributes.each do |attribute|
+        it "#{attribute} still needs to be tested" do
+          skip('Finish me')
+        end
+      end
+
+    end
+
+
     it 'logs when a suite has been completed' do
       # No tasks at all is a quick way for it to be finished already
       @test_suite_creation_payload[:task_ids] = []
