@@ -39,7 +39,12 @@ module TEF
       raise(ArgumentError, 'No results found in the task data') unless payload[:task_data][:results].is_a?(Hash)
 
       save_task_result(payload, logger)
-      check_for_suite_completion(payload[:suite_guid], logger)
+
+      if payload[:suite_guid]
+        create_suite_model_if_needed(payload)
+        check_for_suite_completion(payload[:suite_guid], logger)
+      end
+
       logger.debug "Saved results for task #{payload[:guid]}"
     end
 
@@ -76,7 +81,7 @@ module TEF
       check_for_suite_completion(payload[:suite_guid], logger)
     end
 
-    def self.create_suite_model(suite_guid, suite_data)
+    def self.create_suite_model(suite_guid, suite_data = {})
       suite = Models::TestSuite.new
       suite.guid = suite_guid
       suite.name = suite_data[:name]
@@ -148,11 +153,13 @@ module TEF
       scenario_model.feature = get_associated_feature(parsed_result[:feature], task_hash[:suite_guid])
       scenario_model.name = parsed_result[:scenario].name
       scenario_model.line_number = parsed_result[:scenario].line_no
-      scenario_model.steps = parsed_result[:scenario].step_text
-      scenario_model.status = parsed_result[:scenario].passed? ? 'pass' : 'fail'
+      scenario_model.steps = parsed_result[:scenario].steps
+      scenario_model.status = parsed_result[:scenario].status
       scenario_model.exception = parsed_result[:scenario].error_message unless parsed_result[:scenario].passed?
       scenario_model.task_guid = task_hash[:guid]
       scenario_model.suite_guid = task_hash[:suite_guid]
+      scenario_model.runtime = parsed_result[:scenario].runtime
+      scenario_model.end_time = DateTime.now
       scenario_model.done = true
 
       scenario_model.save
@@ -209,6 +216,10 @@ module TEF
     def self.get_scenario_model_for(task_guid)
       # A placeholder record may or may not have already been created depending on message timing.
       scenario_model_for(task_guid) || Models::Scenario.new
+    end
+
+    def self.create_suite_model_if_needed(task_hash)
+      create_suite_model(task_hash[:suite_guid]) unless suite_model_for(task_hash[:suite_guid])
     end
 
     def self.suite_model_for(suite_guid)

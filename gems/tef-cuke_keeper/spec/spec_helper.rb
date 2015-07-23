@@ -9,7 +9,7 @@ require 'tef/cuke_keeper'
 
 require 'tef/development/testing/mocks'
 include TEF::Development::Testing::Mocks
-
+require 'helper_methods'
 
 
 def tef_env

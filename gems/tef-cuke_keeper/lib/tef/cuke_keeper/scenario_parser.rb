@@ -33,6 +33,16 @@ module TEF
         @hash[:steps]
       end
 
+      def steps
+        String.new.tap do |steps|
+          raw_steps.each do |raw_step|
+            steps << "#{raw_step[:keyword]}#{raw_step[:name]}\n"
+          end
+
+          steps.chomp!
+        end
+      end
+
       def step_text
         res = ['Steps:']
 
@@ -55,6 +65,21 @@ module TEF
         raw_steps.select { |step| step_failed?(step) }.first
       end
 
+      def status
+        case
+          when raw_steps.all? { |step| step_passed?(step) }
+            return 'pass'
+          when raw_steps.any? { |step| step_failed?(step) }
+            return 'fail'
+          when raw_steps.any? { |step| step_pending?(step) }
+            return 'pending'
+          when raw_steps.any? { |step| step_undefined?(step) }
+            return 'undefined'
+          else
+            raise("Can't determine the status of the test result.")
+        end
+      end
+
       def passed?
         failed_step.nil?
       end
@@ -63,11 +88,37 @@ module TEF
         failed_step[:result][:error_message] unless failed_step.nil?
       end
 
+      def runtime
+        raw_steps.reduce(0) { |total, step| total += (step[:result][:duration] / 1000000000.0) }
+      end
+
+
       private
+
 
       def step_failed?(step_hash)
         return false unless step_hash[:result]
         return step_hash[:result][:status] == 'failed'
+      end
+
+      def step_passed?(step_hash)
+        return false unless step_hash[:result]
+        return step_hash[:result][:status] == 'passed'
+      end
+
+      def step_skipped?(step_hash)
+        return false unless step_hash[:result]
+        return step_hash[:result][:status] == 'skipped'
+      end
+
+      def step_pending?(step_hash)
+        return false unless step_hash[:result]
+        return step_hash[:result][:status] == 'pending'
+      end
+
+      def step_undefined?(step_hash)
+        return false unless step_hash[:result]
+        return step_hash[:result][:status] == 'undefined'
       end
 
       def step_to_s(raw_step)

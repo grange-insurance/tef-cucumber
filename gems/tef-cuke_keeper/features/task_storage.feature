@@ -30,3 +30,8 @@ Feature: Task Storage
       | requested_time |
       | finished_time  |
       | complete       |
+
+  Scenario: Storing a test result
+    Given a test result with data
+    When the result is processed by the keeper
+    Then the result's information is stored
