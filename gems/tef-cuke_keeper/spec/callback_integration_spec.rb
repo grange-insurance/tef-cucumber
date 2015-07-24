@@ -397,10 +397,11 @@ describe 'CukeKeeper.callback, Integration' do
 
     end
 
+
     describe 'task message handling' do
 
 
-      let(:example_test_output) { "Test 2 is happening\nBundler mode: dev\nJSON_EXPANDED_FORMATTER_CONSUMABLE_OUTPUT_STARTS_HERE[\n  {\n    \"keyword\": \"Feature\",\n    \"name\": \"Test feature 2\",\n    \"line\": 1,\n    \"description\": \"\",\n    \"id\": \"test-feature-2\",\n    \"uri\": \"features/more_features/test_feature_2.feature\",\n    \"elements\": [\n      {\n        \"keyword\": \"Scenario\",\n        \"name\": \"Test 2\",\n        \"line\": 3,\n        \"description\": \"\",\n        \"id\": \"test-feature-2;test-2\",\n        \"type\": \"scenario\",\n        \"steps\": [\n          {\n            \"keyword\": \"* \",\n            \"name\": \"echo \\\"Test 2 is happening\\\"\",\n            \"line\": 4,\n            \"match\": {\n              \"arguments\": [\n                {\n                  \"offset\": 6,\n                  \"val\": \"Test 2 is happening\"\n                }\n              ],\n              \"location\": \"features/step_definitions/test_step_defs.rb:1\"\n            },\n            \"result\": {\n              \"status\": \"passed\",\n              \"duration\": 123000000\n            }\n          },\n          {\n            \"keyword\": \"* \",\n            \"name\": \"explode\",\n            \"line\": 5,\n            \"match\": {\n              \"location\": \"features/step_definitions/test_step_defs.rb:5\"\n            },\n            \"result\": {\n              \"status\": \"failed\",\n              \"error_message\": \"Boom!!! (RuntimeError)\\n./features/step_definitions/test_step_defs.rb:6:in `/^explode$/'\\nfeatures/more_features/test_feature_2.feature:5:in `* explode'\",\n              \"duration\": 0\n            }\n          }\n        ]\n      }\n    ]\n  }\n]JSON_EXPANDED_FORMATTER_CONSUMABLE_OUTPUT_ENDS_HERE" }
+      let(:example_test_output) { generic_test_output }
       let(:generic_test_result_message) { {:type => 'task', :task_data => {:results => {:stdout => example_test_output}}, guid: 'task_112233'} }
 
 
@@ -410,49 +411,51 @@ describe 'CukeKeeper.callback, Integration' do
         end
       end
 
-      scenario_attributes.each do |attribute|
 
-        # Done-ness, end time, and the feature id that the scenario is attached to are derived, not provided
-        unless [:done, :end_time, :feature_id].include?(attribute)
-          it "stores the '#{attribute}' when it saves a test result" do
-            values = {name: 'foo',
-                      exception: 'Bad things happened!',
-                      line_number: 7,
-                      runtime: 5.0,
-                      status: 'pending',
-                      suite_guid: 'suite999',
-                      task_guid: 'test_task_123',
-                      steps: "* some step\nAnd another step"
-            }
-            update_test_output(generic_test_result_message, attribute, values[attribute])
+      [:scenario, :outline].each do |result_type|
+        scenario_attributes.each do |attribute|
 
-            nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+          # Done-ness, end time, and the feature id that the scenario is attached to are derived, not provided
+          unless [:done, :end_time, :feature_id].include?(attribute)
+            it "stores the '#{attribute}' when it saves a #{result_type} result" do
+              values = {name: 'foo',
+                        exception: 'Bad things happened!',
+                        line_number: 7,
+                        runtime: 5.0,
+                        status: 'pending',
+                        suite_guid: 'suite999',
+                        task_guid: 'test_task_123',
+                        steps: "* some step\nAnd another step"
+              }
+              update_test_output(result_type, generic_test_result_message, attribute, values[attribute])
 
-            expect(TEF::CukeKeeper::Models::Scenario.first.send(attribute)).to eq(values[attribute])
+              nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+
+              expect(TEF::CukeKeeper::Models::Scenario.first.send(attribute)).to eq(values[attribute])
+            end
+          end
+
+          it "updates the existing record with the new '#{attribute}' if a record already exists for the #{result_type}" do
+            skip('finish me')
           end
 
         end
 
-        it "updates the existing record with the new '#{attribute}' if a record already exists for the test_result" do
-          skip('finish me')
+        it "stores the end time when the #{result_type} task is stored" do
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+
+          expect(TEF::CukeKeeper::Models::Scenario.first.end_time.to_i).to eq(DateTime.now.to_i)
         end
 
-      end
+        it "marks the task as done when the #{result_type} task is stored" do
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
 
-      it 'stores the end time when the task is stored' do
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+          expect(TEF::CukeKeeper::Models::Scenario.first.done).to be true
+        end
 
-        expect(TEF::CukeKeeper::Models::Scenario.first.end_time.to_i).to eq(DateTime.now.to_i)
-      end
-
-      it 'marks the task as done when the task is stored' do
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
-
-        expect(TEF::CukeKeeper::Models::Scenario.first.done).to be true
-      end
-
-      it "feature_id still needs to be tested" do
-        skip('Finish me')
+        it "feature_id still needs to be tested for #{result_type}" do
+          skip('Finish me')
+        end
       end
 
       context 'when the task is part of a suite' do
@@ -477,48 +480,39 @@ describe 'CukeKeeper.callback, Integration' do
 
       end
 
-      it 'considers a test passing if all steps pass' do
-        update_test_output(generic_test_result_message, :status, 'passing')
+      [:scenario, :outline].each do |result_type|
 
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+        it "considers a #{result_type} passing if all steps pass" do
+          update_test_output(result_type, generic_test_result_message, :status, 'passing')
 
-        expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('pass')
-      end
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
 
-      it 'considers a test failing if any step fails' do
-        update_test_output(generic_test_result_message, :status, 'failing')
+          expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('pass')
+        end
 
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+        it "considers a #{result_type} failing if any step fails" do
+          update_test_output(result_type, generic_test_result_message, :status, 'failing')
 
-        expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('fail')
-      end
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
 
-      it 'considers a test pending if there is a pending step' do
-        update_test_output(generic_test_result_message, :status, 'pending')
+          expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('fail')
+        end
 
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+        it "considers a #{result_type} pending if there is a pending step" do
+          update_test_output(result_type, generic_test_result_message, :status, 'pending')
 
-        expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('pending')
-      end
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
 
-      it 'considers a test undefined if there is an undefined step step' do
-        update_test_output(generic_test_result_message, :status, 'undefined')
+          expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('pending')
+        end
 
-        nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
+        it "considers a #{result_type} undefined if there is an undefined step step" do
+          update_test_output(result_type, generic_test_result_message, :status, 'undefined')
 
-        expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('undefined')
-      end
+          nodule.callback.call(create_mock_delivery_info, create_mock_properties, generic_test_result_message, create_mock_logger)
 
-      it 'can store steps from a scenario' do
-        skip('finish me')
-      end
-
-      it 'can store steps from an outline' do
-        skip('finish me')
-      end
-
-      it 'can determine pass/fail/pending/undefined status from an outline' do
-        skip('finish me')
+          expect(TEF::CukeKeeper::Models::Scenario.first.status).to eq('undefined')
+        end
       end
 
     end

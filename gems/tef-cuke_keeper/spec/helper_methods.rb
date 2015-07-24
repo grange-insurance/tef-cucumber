@@ -1,4 +1,8 @@
-def update_test_output(message, attribute, value)
+def generic_test_output
+  "Test 2 is happening\nBundler mode: dev\nJSON_EXPANDED_FORMATTER_CONSUMABLE_OUTPUT_STARTS_HERE[\n  {\n    \"keyword\": \"Feature\",\n    \"name\": \"Test feature 2\",\n    \"line\": 1,\n    \"description\": \"\",\n    \"id\": \"test-feature-2\",\n    \"uri\": \"features/more_features/test_feature_2.feature\",\n    \"elements\": [\n      {\n        \"keyword\": \"Scenario\",\n        \"name\": \"Test 2\",\n        \"line\": 3,\n        \"description\": \"\",\n        \"id\": \"test-feature-2;test-2\",\n        \"type\": \"scenario\",\n        \"steps\": [\n          {\n            \"keyword\": \"* \",\n            \"name\": \"echo \\\"Test 2 is happening\\\"\",\n            \"line\": 4,\n            \"match\": {\n              \"arguments\": [\n                {\n                  \"offset\": 6,\n                  \"val\": \"Test 2 is happening\"\n                }\n              ],\n              \"location\": \"features/step_definitions/test_step_defs.rb:1\"\n            },\n            \"result\": {\n              \"status\": \"passed\",\n              \"duration\": 123000000\n            }\n          },\n          {\n            \"keyword\": \"* \",\n            \"name\": \"explode\",\n            \"line\": 5,\n            \"match\": {\n              \"location\": \"features/step_definitions/test_step_defs.rb:5\"\n            },\n            \"result\": {\n              \"status\": \"failed\",\n              \"error_message\": \"Boom!!! (RuntimeError)\\n./features/step_definitions/test_step_defs.rb:6:in `/^explode$/'\\nfeatures/more_features/test_feature_2.feature:5:in `* explode'\",\n              \"duration\": 0\n            }\n          }\n        ]\n      }\n    ]\n  }\n]JSON_EXPANDED_FORMATTER_CONSUMABLE_OUTPUT_ENDS_HERE"
+end
+
+def update_test_output(type = :scenario, message, attribute, value)
   output = message[:task_data][:results][:stdout]
 
   start_marker ='JSON_EXPANDED_FORMATTER_CONSUMABLE_OUTPUT_STARTS_HERE'
@@ -6,6 +10,12 @@ def update_test_output(message, attribute, value)
 
   json_output = output.match(/#{start_marker}(.*)#{end_marker}/m)[1]
   json_hash = JSON.parse(json_output, symbolize_names: true)
+
+  if type == :scenario
+    json_hash.first[:elements].first[:type] = 'scenario'
+  else
+    json_hash.first[:elements].first[:type] = 'scenario_outline'
+  end
 
 
   case attribute
@@ -18,7 +28,11 @@ def update_test_output(message, attribute, value)
 
       json_hash.first[:elements].first[:steps].unshift(failing_step)
     when :line_number
-      json_hash.first[:elements].first[:line] = value
+      if type == :scenario
+        json_hash.first[:elements].first[:line] = value
+      else
+        json_hash.first[:elements].first[:row_line] = value
+      end
     when :runtime
       num_steps = json_hash.first[:elements].first[:steps].count
       time_portion = (value * 1000000000.0) / num_steps

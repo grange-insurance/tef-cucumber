@@ -1,7 +1,9 @@
 Then(/^results for the executed tests are stored by the keeper$/) do
   expected_test_cases = ["features/more_features/test_feature_2.feature:3",
                          "features/more_features/test_feature_2.feature:7",
-                         "features/test_feature_1.feature:3"]
+                         "features/test_feature_1.feature:3",
+                         "features/test_feature_1.feature:10",
+                         "features/test_feature_1.feature:11"]
 
   # Keeper needs to be ready
   keeper_queue_name = "tef.#{@tef_env}.keeper.cucumber"

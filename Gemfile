@@ -7,7 +7,7 @@ def testing_gems
   gem 'racatt'
 #   gem 'rspec', '~> 3.0.0'
   gem 'rspec-wait'
-#   gem 'cucumber'
+  gem 'cucumber', '~>1.3'
   gem 'simplecov'
 #   gem 'bundler', '~> 1.6'
   gem 'bunny', '~> 1.4'

@@ -152,7 +152,7 @@ module TEF
 
       scenario_model.feature = get_associated_feature(parsed_result[:feature], task_hash[:suite_guid])
       scenario_model.name = parsed_result[:scenario].name
-      scenario_model.line_number = parsed_result[:scenario].line_no
+      scenario_model.line_number = determine_line_for(parsed_result[:scenario])
       scenario_model.steps = parsed_result[:scenario].steps
       scenario_model.status = parsed_result[:scenario].status
       scenario_model.exception = parsed_result[:scenario].error_message unless parsed_result[:scenario].passed?
@@ -247,6 +247,10 @@ module TEF
       feature_model.save
 
       feature_model
+    end
+
+    def self.determine_line_for(result)
+      result.outline? ? result.row_no : result.line_no
     end
 
     def self.tef_env

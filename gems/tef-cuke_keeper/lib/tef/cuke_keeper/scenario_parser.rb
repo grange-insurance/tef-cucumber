@@ -9,12 +9,24 @@ module TEF
         @hash = hash
       end
 
+      def scenario?
+        @hash[:type] == 'scenario'
+      end
+
+      def outline?
+        @hash[:type] == 'scenario_outline'
+      end
+
       def name
         @hash[:name]
       end
 
       def line_no
         @hash[:line]
+      end
+
+      def row_no
+        @hash[:row_line]
       end
 
       def tags

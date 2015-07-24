@@ -69,7 +69,15 @@ module Cucumber
 
       def before_feature_element(feature_element)
         @outline_table = nil
-        if feature_element.is_a?(Core::Ast::ScenarioOutline)
+
+        if Gem.loaded_specs['cucumber'].version >= Gem::Version.new('2.0.0')
+          warn("Warning: This formatter has not been verified to work with cucumber version #{Gem.loaded_specs['cucumber'].version}")
+          outline_class = Cucumber::Core::Ast::ScenarioOutline
+        else
+          outline_class = Ast::ScenarioOutline
+        end
+
+        if feature_element.is_a?(outline_class)
           @outline = true
           @feature_element = feature_element
         else
@@ -119,12 +127,14 @@ module Cucumber
         if @outline_table
           # Scenario Name is the only way we know we are moving
           # to a new table row in "--expand" mode.
+          @table_row_line = args.select { |arg| arg =~ /\.feature:\d+$/ }.first.match(/\.feature:(\d+)$/)[1] # Would be great to have a better way to get the line number of the executed row
           @outline_table_row += 1
           outline_before_table_row(@feature_element)
         end
       end
 
       def before_table_row(table_row)
+        @table_row_line = table_row.to_sexp[1] # Would be great to have a better way to get the line number of the executed row
         @table_row_time = Time.now
       end
 
@@ -174,6 +184,7 @@ module Cucumber
 
       def outline_before_table_row(feature_element)
         @gf.scenario_outline(feature_element.gherkin_statement)
+        @gf.send(:feature_elements).last['row_line'] = @table_row_line
       end
 
       # Replaces table cells in the name of the given step.
