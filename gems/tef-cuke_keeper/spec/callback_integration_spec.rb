@@ -54,30 +54,6 @@ describe 'CukeKeeper.callback, Integration' do
     DatabaseCleaner.clean
   end
 
-  describe 'safety measures so that no one forgets to add tests for new data' do
-
-    it 'should have tests for every tracked test suite attribute' do
-      current_columns = TEF::CukeKeeper::Models::TestSuite.column_names.map { |name| name.to_sym }
-      current_columns.delete(:id)
-
-      expect(current_columns).to match_array(suite_attributes)
-    end
-
-    it 'should have tests for every tracked feature attribute' do
-      current_columns = TEF::CukeKeeper::Models::Feature.column_names.map { |name| name.to_sym }
-      current_columns.delete(:id)
-
-      expect(current_columns).to match_array(feature_attributes)
-    end
-
-    it 'should have tests for every tracked test attribute' do
-      current_columns = TEF::CukeKeeper::Models::Scenario.column_names.map { |name| name.to_sym }
-      current_columns.delete(:id)
-
-      expect(current_columns).to match_array(scenario_attributes)
-    end
-
-  end
 
   describe 'message handling' do
 

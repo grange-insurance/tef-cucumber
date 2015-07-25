@@ -1,28 +1,13 @@
 And(/^The following attributes are tracked for a scenario$/) do |attributes|
-  expected_column_names_array = attributes.raw.flatten
-
-  found_column_names_array = TEF::CukeKeeper::Models::Scenario.column_names
-  found_column_names_array.delete('id') # We don't care about the database's internal id column
-
-  expect(found_column_names_array).to match_array expected_column_names_array
+  @scenario_attributes = attributes.raw.flatten
 end
 
 And(/^The following attributes are tracked for a suite$/) do |attributes|
-  expected_column_names_array = attributes.raw.flatten
-
-  found_column_names_array = TEF::CukeKeeper::Models::TestSuite.column_names
-  found_column_names_array.delete('id') # We don't care about the database's internal id column
-
-  expect(found_column_names_array).to match_array expected_column_names_array
+  @suite_attributes = attributes.raw.flatten
 end
 
 And(/^The following attributes are tracked for a feature$/) do |attributes|
-  expected_column_names_array = attributes.raw.flatten
-
-  found_column_names_array = TEF::CukeKeeper::Models::Feature.column_names
-  found_column_names_array.delete('id') # We don't care about the database's internal id column
-
-  expect(found_column_names_array).to match_array expected_column_names_array
+  @feature_attributes = attributes.raw.flatten
 end
 
 Given(/^a test result with data$/) do
@@ -35,10 +20,21 @@ When(/^the result is processed by the keeper$/) do
 end
 
 Then(/^the result's information is stored$/) do
-  scenario_attributes = TEF::CukeKeeper::Models::Scenario.column_names
   scenario = TEF::CukeKeeper::Models::Scenario.first
 
-  scenario_attributes.each do |attribute|
+  @scenario_attributes.each do |attribute|
     expect(scenario.send(attribute)).to_not be_nil
   end
+end
+
+Then(/^there is a place to store the scenario's attributes$/) do
+  expect(TEF::CukeKeeper::Models::Scenario.column_names).to include(*@scenario_attributes)
+end
+
+Then(/^there is a place to store the features's attributes$/) do
+  expect(TEF::CukeKeeper::Models::Feature.column_names).to include(*@feature_attributes)
+end
+
+Then(/^there is a place to store the test suite's attributes$/) do
+  expect(TEF::CukeKeeper::Models::TestSuite.column_names).to include(*@suite_attributes)
 end
