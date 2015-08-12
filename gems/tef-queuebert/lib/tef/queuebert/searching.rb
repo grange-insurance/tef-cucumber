@@ -1,6 +1,6 @@
 require 'cuke_slicer'
 # Feels like I shouldn't have to do this in a relative manner...
-require_relative 'gem_extensions'
+require 'tef/queuebert/gem_extensions'
 
 
 module TEF

@@ -1,10 +1,10 @@
-require_relative 'cuke_keeper/version'
-require_relative 'cuke_keeper/scenario_parser'
-require_relative 'cuke_keeper/feature_parser'
-require_relative 'cuke_keeper/json_parser'
-require_relative 'cuke_keeper/models/test_suite'
-require_relative 'cuke_keeper/models/feature'
-require_relative 'cuke_keeper/models/scenario'
+require 'tef/cuke_keeper/version'
+require 'tef/cuke_keeper/scenario_parser'
+require 'tef/cuke_keeper/feature_parser'
+require 'tef/cuke_keeper/json_parser'
+require 'tef/cuke_keeper/models/test_suite'
+require 'tef/cuke_keeper/models/feature'
+require 'tef/cuke_keeper/models/scenario'
 require 'json'
 
 
