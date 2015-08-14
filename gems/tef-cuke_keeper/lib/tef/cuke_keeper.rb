@@ -257,9 +257,8 @@ module TEF
       !ENV['TEF_ENV'].nil? ? ENV['TEF_ENV'].downcase : 'dev'
     end
 
-    #todo - rename this variable so that the keeper and the manager can have separate DBs
     def self.tef_config
-      !ENV['TEF_CONFIG'].nil? ? ENV['TEF_CONFIG'] : "#{File.dirname(__FILE__)}/../../config"
+      !ENV['TEF_CUKE_KEEPER_DB_CONFIG'].nil? ? ENV['TEF_CUKE_KEEPER_DB_CONFIG'] : "#{File.dirname(__FILE__)}/../../config"
     end
 
     def self.init_db(db_config_file = nil)
