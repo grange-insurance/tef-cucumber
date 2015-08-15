@@ -1,4 +1,4 @@
-# Tef::CukeKeeper
+# TEF::CukeKeeper
 
 TODO: Write a gem description
 

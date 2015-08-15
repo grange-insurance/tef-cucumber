@@ -2,7 +2,7 @@ require "tef/cucumber/version"
 
 require 'tef/cuke_keeper'
 
-module Tef
+module TEF
   module Cucumber
     # Your code goes here...
   end

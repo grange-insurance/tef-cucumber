@@ -5,7 +5,7 @@ require 'tef/cucumber/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "tef-cucumber"
-  spec.version       = Tef::Cucumber::VERSION
+  spec.version       = TEF::Cucumber::VERSION
   spec.authors       = ["Eric Kessler"]
   spec.email         = ["morrow748@gmail.com"]
 
