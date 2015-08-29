@@ -22,10 +22,15 @@ namespace 'tef' do
     end
 
     desc 'Install all gems'
-    task :install_gems => [:build_gems] do
+    task :install_gems, [:install_options] => [:build_gems] do |t, args|
       @built_gems.each do |gem_file|
+        command = "gem install #{gem_file}"
+        command += " #{args[:install_options]}" if args[:install_options]
+
         puts "Installing gem at #{gem_file}"
-        system("gem install #{gem_file}")
+        puts "with command: #{command}"
+
+        system(command)
       end
     end
 
