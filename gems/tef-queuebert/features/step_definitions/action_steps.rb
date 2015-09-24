@@ -121,3 +121,28 @@ When(/^a task is created for it$/) do
 
   @created_tasks = TEF::Queuebert::Tasking.create_tasks_for(@request, @request[:tests])
 end
+
+When(/^the following request for a test suite is sent to it:$/) do |json_request|
+  @request = process_path(json_request)
+  request_queue_name = "tef.#{@tef_env}.queuebert.request"
+
+  get_queue(request_queue_name).publish(@request)
+end
+
+And(/^messages have been sent out in response$/) do
+  task_queue_name = "tef.#{@tef_env}.task_queue.control"
+  queue = get_queue(task_queue_name)
+
+  # Give the messages a moment to get there
+  wait_for { queue.message_count }.not_to eq(0)
+
+  @received_task_messages = messages_from_queue(task_queue_name)
+
+  suite_notification_queue_name = "tef.#{@tef_env}.keeper.cucumber"
+  queue = get_queue(suite_notification_queue_name)
+
+  # Give the messages a moment to get there
+  wait_for { queue.message_count }.not_to eq(0)
+
+  @received_suite_notifications_messages = messages_from_queue(suite_notification_queue_name)
+end

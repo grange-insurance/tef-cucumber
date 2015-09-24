@@ -256,3 +256,38 @@ Then(/^the created task matches the following:$/) do |task|
   expect(task[:guid]).to_not be_nil
   expect(@created_tasks.first).to eq(task)
 end
+
+Then(/^the following task message was sent to the manager:$/) do |task_json|
+  # Masking out data that we can't know ahead of time
+  @received_task_messages.each { |task| task['guid'] = '<some guid>' }
+
+  task_json = process_path(task_json) if task_json.include?('path/to')
+
+  expect(@received_task_messages).to include(JSON.parse(task_json.to_s))
+  @received_task_messages.delete(JSON.parse(task_json.to_s))
+end
+
+And(/^the following suite notification message was sent to the keeper:$/) do |notification_json|
+  # Only one notification should get sent
+  expect(@received_suite_notifications_messages.count).to eq(1)
+
+  actual_notification = @received_suite_notifications_messages.shift
+  expected_notification = JSON.parse(notification_json.to_s)
+
+  # Masking out data that we can't know ahead of time but making sure that it is at least there
+  expect(actual_notification).to have_key('task_ids')
+  actual_notification.delete('task_ids')
+  expected_notification.delete('task_ids')
+
+  expect(actual_notification).to have_key('requested_time')
+  actual_notification.delete('requested_time')
+  expected_notification.delete('requested_time')
+
+  # Everything else should match
+  expect(actual_notification).to eq(expected_notification)
+end
+
+And(/^no other messages were sent$/) do
+  expect(@received_task_messages).to be_empty
+  expect(@received_suite_notifications_messages).to be_empty
+end

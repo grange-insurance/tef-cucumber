@@ -24,6 +24,7 @@ ENV['TEF_ENV'] ||= 'dev'
 ENV['TEF_AMQP_URL_DEV'] ||= 'amqp://localhost:5672'
 
 
+# todo - move hooks out to another file
 Before do
   begin
     @tef_env = ENV['TEF_ENV'].downcase
@@ -67,6 +68,8 @@ After('~@unit') do
 end
 
 
+# todo - move these helper methods out to another file
+
 def process_path(path)
   path.sub('path/to', @default_file_directory)
 end
@@ -74,4 +77,16 @@ end
 def process_filter(filter)
   filter = process_path(filter)
   filter =~ /^\/.+\/$/ ? Regexp.new(filter.slice(1..-2)) : filter
+end
+
+def messages_from_queue(queue_name)
+  queue = get_queue(queue_name)
+
+  messages = []
+  queue.message_count.times do
+    messages << queue.pop
+  end
+
+  # Extracting the payload portion of the messages
+  messages.map { |task| JSON.parse(task[2]) }.flatten
 end

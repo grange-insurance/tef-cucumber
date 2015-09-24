@@ -72,8 +72,8 @@ will filter out non-matching test cases. Filters can be strings or regular expre
 
   Scenario: Restricting discovery by included path
     When "test_directory" is searched for tests using the following path filters:
-      | filter type | filter                                                       |
-      | included    | path/to/test_directory/nested_directory/another_test.feature |
+      | filter type | filter                                               |
+      | included    | path/to/test_directory/nested_directory/another_test |
     Then the following test cases are discovered for "test_directory":
       | test_directory/nested_directory/another_test.feature:5  |
       | test_directory/nested_directory/another_test.feature:14 |

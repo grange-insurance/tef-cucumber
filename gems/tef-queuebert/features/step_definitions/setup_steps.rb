@@ -8,9 +8,9 @@ Given(/^the following feature file "([^"]*)":$/) do |file_name, file_text|
 end
 
 Given(/^the directory "([^"]*)"$/) do |directory_name|
-  @current_directory = "#{@default_file_directory}/#{directory_name}"
+  @current_directory = directory_name.include?('path/to') ? process_path(directory_name) : "#{@default_file_directory}/#{directory_name}"
 
-  FileUtils.mkdir(@current_directory)
+  FileUtils.mkpath(@current_directory)
 end
 
 Given(/^the following tag filters:$/) do |filters|

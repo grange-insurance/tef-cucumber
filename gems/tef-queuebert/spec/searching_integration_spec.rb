@@ -95,7 +95,7 @@ describe 'Searching, Integration' do
 
     applied_filters = {excluded_tags: '@a',
                        included_tags: /./,
-                       excluded_paths: 'a',
+                       excluded_paths: 'aaa',
                        included_paths: /./,
     }
 
@@ -143,6 +143,89 @@ describe 'Searching, Integration' do
     expect { nodule.find_test_cases(@root, ['.', '.']) }.to_not raise_error
     expect { nodule.find_test_cases(@root, :bad) }.to raise_error(ArgumentError, /must be a/)
     expect { nodule.find_test_cases(@root, nil) }.to raise_error(ArgumentError, /must be a/)
+  end
+
+  describe 'filtering' do
+
+    before(:each) do
+      test_file = "#{@default_file_directory}/a_test.feature"
+      file_text = "Feature:
+                     @tag_1
+                     Scenario:
+                       * a step
+
+                     @tag_2
+                     Scenario:
+                       * a step
+
+                     @tag_22
+                     Scenario:
+                       * a step"
+      File.write(test_file, file_text)
+
+      test_file = "#{@default_file_directory}/another_test.feature"
+      file_text = "Feature:
+                     Scenario:
+                       * a step"
+      File.write(test_file, file_text)
+    end
+
+
+    describe 'tag filtering' do
+
+      context 'including tags' do
+
+        let(:filter) { :included_tags }
+
+        it 'can extract regular expressions from string arguments' do
+          found_tests = nodule.find_test_cases(@default_file_directory, '.', filter => '/2/')
+
+          expect(found_tests).to match_array(["./a_test.feature:7", "./a_test.feature:11"])
+        end
+
+      end
+
+      context 'excluding tags' do
+
+        let(:filter) { :excluded_tags }
+
+        it 'can extract regular expressions from string arguments' do
+          found_tests = nodule.find_test_cases(@default_file_directory, '.', filter => '/2/')
+
+          expect(found_tests).to match_array(["./a_test.feature:3", "./another_test.feature:2"])
+        end
+
+      end
+
+    end
+
+    describe 'path filtering' do
+
+      context 'including paths' do
+
+        let(:filter) { :included_paths }
+
+        it 'can extract regular expressions from string arguments' do
+          found_tests = nodule.find_test_cases(@default_file_directory, '.', filter => '/other/')
+
+          expect(found_tests).to match_array(["./another_test.feature:2"])
+        end
+
+      end
+
+      context 'excluding paths' do
+
+        let(:filter) { :excluded_paths }
+
+        it 'can extract regular expressions from string arguments' do
+          found_tests = nodule.find_test_cases(@default_file_directory, '.', filter => '/other/')
+
+          expect(found_tests).to match_array(["./a_test.feature:3", "./a_test.feature:7", "./a_test.feature:11"])
+        end
+
+      end
+
+    end
   end
 
 end
