@@ -2,39 +2,22 @@ require 'spec_helper'
 require 'bunny'
 
 
-def default_options
-  {}
-end
-
-
 describe 'Queuebert, Integration' do
 
-  clazz = TEF::Queuebert::Queuebert
+  let(:clazz) { TEF::Queuebert::Queuebert }
+  let(:configuration) { {} }
 
-  it_should_behave_like 'a logged component, integration level' do
-    let(:clazz) { clazz }
-    let(:configuration) { default_options }
-  end
-
-  it_should_behave_like 'a service component, integration level' do
-    let(:clazz) { clazz }
-    let(:configuration) { default_options }
-  end
-
-  it_should_behave_like 'a receiving component, integration level', clazz, default_options, [:suite_request_queue]
-  it_should_behave_like 'a sending component, integration level', clazz, default_options, [:manager_queue, :keeper_queue]
-
-
-  before(:each) do
-    @options = default_options
-  end
+  it_should_behave_like 'a logged component, integration level'
+  it_should_behave_like 'a service component, integration level'
+  it_should_behave_like 'a receiving component, integration level', [:suite_request_queue]
+  it_should_behave_like 'a sending component, integration level', [:manager_queue, :keeper_queue]
 
 
   it 'uses its own logging object when creating its queuer' do
     mock_logger = create_mock_logger
-    @options[:logger] = mock_logger
+    configuration[:logger] = mock_logger
 
-    queuebert = clazz.new(@options)
+    queuebert = clazz.new(configuration)
 
     begin
       queuebert.start
