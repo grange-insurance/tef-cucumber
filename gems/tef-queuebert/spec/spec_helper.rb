@@ -12,6 +12,8 @@ require 'tef/development/specs/sending_component_integration_specs'
 require 'tef/development/specs/sending_component_unit_specs'
 require 'tef/development/specs/service_component_unit_specs'
 require 'tef/development/specs/service_component_integration_specs'
+require 'tef/development/specs/wrapper_component_integration_specs'
+require 'tef/development/specs/wrapper_component_unit_specs'
 
 require 'tef/development/testing/custom_matchers'
 require 'tef/development/testing/fakes'
