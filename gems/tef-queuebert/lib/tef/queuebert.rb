@@ -21,7 +21,7 @@ module TEF
 
         @queue_prefix = options.fetch(:queue_prefix, "tef.#{tef_env}")
         @suite_request_queue = options.fetch(:suite_request_queue, "#{@queue_prefix}.queuebert.request")
-        @manager_queue = options.fetch(:manager_queue, "#{@queue_prefix}.task_queue.control")
+        @manager_queue = options.fetch(:manager_queue, "#{@queue_prefix}.manager")
         @keeper_queue = options.fetch(:keeper_queue, "#{@queue_prefix}.keeper.cucumber")
 
         @logger.info('Queuebert created.')

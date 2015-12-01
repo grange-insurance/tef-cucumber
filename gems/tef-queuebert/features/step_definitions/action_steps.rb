@@ -130,7 +130,7 @@ When(/^the following request for a test suite is sent to it:$/) do |json_request
 end
 
 And(/^messages have been sent out in response$/) do
-  task_queue_name = "tef.#{@tef_env}.task_queue.control"
+  task_queue_name = "tef.#{@tef_env}.manager"
   queue = get_queue(task_queue_name)
 
   # Give the messages a moment to get there

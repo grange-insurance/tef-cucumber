@@ -224,7 +224,7 @@ end
 
 Then(/^message in\/out queues for Queuebert have been created$/) do
   request_queue_name = "tef.#{@tef_env}.queuebert.request"
-  task_queue_name = "tef.#{@tef_env}.task_queue.control"
+  task_queue_name = "tef.#{@tef_env}.manager"
 
   expect(@bunny_connection.queue_exists?(request_queue_name)).to be true
   expect(@bunny_connection.queue_exists?(task_queue_name)).to be true

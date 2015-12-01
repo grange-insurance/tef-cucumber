@@ -107,7 +107,7 @@ end
 
 And(/^messages queues are available$/) do
   @request_queue_name = "tef.#{@tef_env}.queuebert.request"
-  @task_queue_name = "tef.#{@tef_env}.task_queue.control"
+  @task_queue_name = "tef.#{@tef_env}.manager"
   @keeper_queue_name = "tef.#{@tef_env}.keeper.cucumber"
 
   @expected_queues = [@request_queue_name, @task_queue_name, @keeper_queue_name]
