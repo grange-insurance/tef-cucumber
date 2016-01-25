@@ -83,7 +83,10 @@ Then(/^the task contains, at least, the following pieces:$/) do |needed_data|
         expected_value = Regexp.new("^#{Regexp.escape(expected_value)}$")
       end
 
-      expect(@test_task[required_key]).to match(expected_value)
+      result = @test_task[required_key]
+      result = result.to_json if result.is_a?(Array)
+
+      expect(result).to match(expected_value)
     end
   end
 end
@@ -234,7 +237,7 @@ And(/^Queuebert can still receive and send messages through them$/) do
   task_queue = get_queue(@task_queue_name)
   request_queue = get_queue(@request_queue_name)
 
-  request_queue.publish('{"name": "foo", "dependencies": "foo|bar", "tests": ["a test"], "root_location": "foo"}')
+  request_queue.publish('{"name": "foo", "dependencies": ["foo","bar"], "tests": ["a test"], "root_location": "foo"}')
 
   # Give the tasks a moment to get there
   wait_for { task_queue.message_count }.not_to eq(0)

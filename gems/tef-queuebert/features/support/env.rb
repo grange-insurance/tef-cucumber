@@ -35,7 +35,7 @@ Before do
 
     @base_request = {
         'name' => 'Test request',
-        'dependencies' => 'foo|bar',
+        'dependencies' => ["foo","bar"],
     }
 
 

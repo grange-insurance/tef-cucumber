@@ -8,7 +8,7 @@ Feature: Task structure
       | task_type    | cucumber                                                                        |
       | guid         | /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/ |
       | task_data    | <non-null>                                                                      |
-      | resources    | /^.+(?:\\\|.+)*$/                                                               |
+      | resources    | /^\[".+"(?:,".+")*\]$/                                                          |
 
   Scenario: Tasks have their request data mapped
 
@@ -21,7 +21,7 @@ Feature: Task structure
       {
         "name":                 "Request Foo",
         "owner":                "Owner Bar",
-        "dependencies":         "foo|bar",
+        "dependencies":         ["foo","bar"],
         "tests":                ["test_feature.feature:1"],
         "priority":             "1",
         "time_limit":           "2",
@@ -49,7 +49,7 @@ Feature: Task structure
                           "root_location": "F:/bar",
                           "working_directory": "baz",
                           "gemfile": "buzz"},
-        "resources":     "foo|bar",
+        "resources":     ["foo","bar"],
         "priority":      "1",
         "time_limit":    "2",
         "suite_guid":    "3"
@@ -62,7 +62,7 @@ Feature: Task structure
       {
         "name":                 "Request Foo",
         "owner":                "Owner Bar",
-        "dependencies":         "foo|bar",
+        "dependencies":         ["foo","bar"],
         "tests":                ["test_feature.feature:1"]
       }
       """
@@ -74,6 +74,6 @@ Feature: Task structure
         "task_type":  "cucumber",
         "guid":       "<some guid>",
         "task_data":  {"cucumber_options": {"file_paths": ["test_feature.feature:1"]}},
-        "resources":  "foo|bar"
+        "resources":  ["foo","bar"]
       }
       """

@@ -20,7 +20,7 @@ describe 'Queuer, Unit' do
   describe 'instance level' do
 
     let(:test_request) { {name: 'Test request',
-                          dependencies: 'foo|bar',
+                          dependencies: ["foo","bar"],
                           root_location: 'foo',
                           tests: ['some', 'tests'],
                           directories: ['some', 'directories']} }
@@ -101,7 +101,7 @@ describe 'Queuer, Unit' do
         it "deems a request invalid if the request doesn't have the '#{required_key}' key" do
           request = {
               name: "Test Run 1",
-              dependencies: "resource_1 | resource_2"
+              dependencies: ["resource_1","resource_2"]
           }
 
           request.delete(required_key)
@@ -114,7 +114,7 @@ describe 'Queuer, Unit' do
       it 'deems a request invalid if it is not given at least one way to determine relevant tests' do
         bad_request = {
             name: "Test Run 1",
-            dependencies: "resource_1 | resource_2"
+            dependencies: ["resource_1","resource_2"]
         }
 
         expect(queuer.valid_request?(bad_request.to_json)).to be false

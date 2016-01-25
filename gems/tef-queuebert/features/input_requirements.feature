@@ -15,7 +15,7 @@ Feature: Suite requests
       """
       {
         "name": "Need this one",
-        "dependencies": "and|these",
+        "dependencies": ["and","these"],
         "root_location": "path/to",
         "<one_of>": <these>,
         "other": "optional stuff"

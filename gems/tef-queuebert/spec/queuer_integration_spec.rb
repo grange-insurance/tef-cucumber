@@ -27,7 +27,7 @@ describe 'Queuer, Integration' do
 
     @test_request = {
         'name' => 'Test request',
-        'dependencies' => 'foo|bar',
+        'dependencies' => ["foo","bar"],
         'root_location' => 'root location foo',
         'tests' => ['some', 'tests']
     }

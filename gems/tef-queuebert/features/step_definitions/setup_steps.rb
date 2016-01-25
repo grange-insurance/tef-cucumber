@@ -45,7 +45,7 @@ end
 Given(/^a created task$/) do
   @test_task = TEF::Queuebert::Tasking.create_tasks_for({name: "Request Foo",
                                                           owner: "Owner Bar",
-                                                          dependencies: "foo|bar", }, ['path/to/some.feature:1']).first
+                                                          dependencies: ["foo","bar"], }, ['path/to/some.feature:1']).first
 end
 
 Given(/^a queue to receive from$/) do
