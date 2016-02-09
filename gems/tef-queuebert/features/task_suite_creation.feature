@@ -16,7 +16,7 @@ Feature: Task suite creation
 
   Background:
     Given a queue to receive from
-    And queues to publish to
+    And an exchange to publish to
     And a location "root_dir"
     And the directory "root_dir/test_directory_1"
     And the following feature file "a_test.feature":

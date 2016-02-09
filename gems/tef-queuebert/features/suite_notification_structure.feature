@@ -8,7 +8,7 @@ Feature: Suite notification structure
 
   Background:
     Given a queue to receive from
-    And queues to publish to
+    And an exchange to publish to
 
 
   Scenario: Initial suite creation notification
@@ -25,7 +25,7 @@ Feature: Suite notification structure
       }
       """
     When a test suite is created for the request
-    Then the following notification is sent to the keeper
+    Then the following notification is sent and routed with "suite"
       """
       {
         "type":             "suite_creation",
@@ -53,8 +53,8 @@ Feature: Suite notification structure
       }
       """
     When a test suite is created for the request
-    And the suite notification is sent to the keeper
-    Then at least one suite update notification is sent to the keeper:
+    And the suite notification is sent and routed with "suite"
+    Then at least one suite update notification is sent and routed with "suite":
       """
       {
         "type":          "suite_update",

@@ -72,7 +72,7 @@ Feature: Task suite creation
       }
       """
     And messages have been sent out in response
-    Then the following task message was sent to the manager:
+    Then the following message was sent and routed with "task":
       """
       {
         "type":       "task",
@@ -87,7 +87,7 @@ Feature: Task suite creation
         "suite_guid": "123456"
       }
       """
-    And the following task message was sent to the manager:
+    And the following message was sent and routed with "task":
       """
       {
         "type":       "task",
@@ -102,7 +102,7 @@ Feature: Task suite creation
         "suite_guid": "123456"
       }
       """
-    And the following task message was sent to the manager:
+    And the following message was sent and routed with "task":
       """
       {
         "type":       "task",
@@ -117,14 +117,14 @@ Feature: Task suite creation
         "suite_guid": "123456"
       }
       """
-    And the following suite notification message was sent to the keeper:
+    And  the following message was sent and routed with "suite":
       """
       {
         "type":             "suite_creation",
         "suite_guid":       "123456",
         "name":             "A complex request",
         "owner":            "You",
-        "task_ids":         ["<task_id_1>", "<task_id_2>", "<task_id_3>"],
+        "task_ids":         ["<task_id>", "<task_id>", "<task_id>"],
         "env":              "env_foo",
         "requested_time":   "<now>",
         "test_count":       "3"

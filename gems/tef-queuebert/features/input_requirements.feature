@@ -5,7 +5,7 @@ Feature: Suite requests
 
   Background:
     Given a queue to receive from
-    And queues to publish to
+    And an exchange to publish to
 
 
   Scenario Outline: Queuebert accepts a properly structured request

@@ -49,13 +49,21 @@ Before do
   end
 end
 
+
+# Put Rabbit in a clean state between tests
 Before('~@unit') do
   begin
-    stdout, stderr, status = Open3.capture3('rabbitmqctl list_queues name')
-    queue_list = stdout.split("\n").slice(1..-2)
+    delete_all_message_queues
+    delete_test_message_exchanges
+  rescue => e
+    puts "Exceptions caught in before hook"
+    puts e.message
+  end
+end
 
-    queue_list.each { |queue| delete_queue(queue) }
-
+# Create a sandbox for test files
+Before('~@unit') do
+  begin
     FileUtils.mkdir(@default_file_directory)
   rescue => e
     puts "Exceptions caught in before hook"
@@ -63,6 +71,7 @@ Before('~@unit') do
   end
 end
 
+# Delete the file sandbox
 After('~@unit') do
   FileUtils.remove_dir(@default_file_directory, true)
 end
@@ -88,5 +97,29 @@ def messages_from_queue(queue_name)
   end
 
   # Extracting the payload portion of the messages
-  messages.map { |task| JSON.parse(task[2]) }.flatten
+  messages.map { |task|
+    {
+        delivery_info: task[0],
+        meta_data: task[1],
+        body: JSON.parse(task[2])
+    }
+  }.flatten
+end
+
+def delete_all_message_queues
+  stdout, stderr, status = Open3.capture3('rabbitmqctl list_queues name')
+  queue_list = stdout.split("\n").slice(1..-2)
+
+  queue_list.each { |queue| delete_queue(queue) }
+end
+
+def delete_test_message_exchanges
+  stdout, stderr, status = Open3.capture3('rabbitmqctl list_exchanges name')
+  exchange_list = stdout.split("\n").slice(1..-1)
+
+  # Don't want to delete Rabbit's own exchanges
+  exchange_list.delete('')
+  exchange_list.delete_if { |name| name =~ /amq/ }
+
+  exchange_list.each { |exchange| delete_exchange(exchange) }
 end

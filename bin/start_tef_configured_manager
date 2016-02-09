@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'tef/manager'
+
+
+ENV['TEF_ENV'] ||= 'dev'
+ENV['TEF_AMQP_URL_DEV'] ||= 'amqp://localhost:5672'
+
+tef_env = ENV['TEF_ENV'].downcase
+bunny_url = ENV["TEF_AMQP_URL_#{tef_env}"]
+
+bunny_connection = Bunny.new(bunny_url)
+bunny_connection.start
+bunny_channel = bunny_connection.create_channel
+
+queuebert_exchange = bunny_channel.topic("tef.#{tef_env}.queuebert_generated_messages", durable: true)
+manager_queue = bunny_channel.queue("tef.#{tef_env}.manager", durable: true)
+manager_queue.bind(queuebert_exchange, routing_key: 'task')
+
+
+manager_node = TEF::Manager::ManagerNode.new(manager_queue: manager_queue)
+manager_node.start
+
+
+begin
+  loop do
+    sleep 1
+  end
+rescue Interrupt => _
+  manager_node.stop
+  bunny_connection.stop
+
+  exit(0)
+end

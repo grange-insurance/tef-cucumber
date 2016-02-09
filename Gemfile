@@ -30,7 +30,7 @@ def dev_gems
   gem 'tef-keeper', :path => '../tef/gems/tef-keeper'
   gem 'tef-cuke_keeper', :path => 'gems/tef-cuke_keeper'
 #   # gem 'mdf', :path => 'gems/mdf'
-#   gem 'tef', :path => '.'
+  gem 'tef-cucumber', :path => '.'
   gem 'tef-development', :path => '../tef/gems/tef-development'
 end
 

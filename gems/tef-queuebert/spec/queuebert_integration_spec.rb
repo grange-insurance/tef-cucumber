@@ -11,7 +11,7 @@ describe 'Queuebert, Integration' do
   it_should_behave_like 'a service component, integration level'
   it_should_behave_like 'a receiving component, integration level', [:suite_request_queue]
   it_should_behave_like 'a sending component, integration level', [:manager_queue, :keeper_queue]
-  it_should_behave_like 'a wrapper component, integration level', [:suite_request_queue, :manager_queue, :keeper_queue]
+  it_should_behave_like 'a wrapper component, integration level', [:suite_request_queue, :output_exchange]
 
 
   it 'uses its own logging object when creating its queuer' do

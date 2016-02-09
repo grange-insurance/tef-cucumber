@@ -45,7 +45,7 @@ describe 'Queuer, Integration' do
 
     @fake_publisher = create_fake_publisher(@mock_channel)
 
-    @options = {suite_request_queue: @mock_publisher, manager_queue: create_mock_queue, keeper_queue: create_mock_queue, task_creator: @mock_task_creator}
+    @options = {suite_request_queue: @mock_publisher, output_exchange: create_mock_exchange, task_creator: @mock_task_creator}
   end
 
   it_should_behave_like 'a logged component, integration level' do

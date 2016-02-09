@@ -62,18 +62,37 @@ Before do
 end
 
 
-Before do
+# Put Rabbit in a clean state between tests
+Before('~@unit') do
   begin
-    stdout, stderr, status = Open3.capture3('rabbitmqctl list_queues name')
-    queue_list = stdout.split("\n").slice(1..-2)
-
-    queue_list.each { |queue| delete_queue(queue) }
+    delete_all_message_queues
+    delete_test_message_exchanges
   rescue => e
-    puts "Problem caught in Before hook: #{e.message}"
+    puts "Exceptions caught in before hook"
+    puts e.message
   end
 end
 
 After do
   kill_existing_tef_processes
   DatabaseCleaner.clean
+end
+
+
+def delete_all_message_queues
+  stdout, stderr, status = Open3.capture3('rabbitmqctl list_queues name')
+  queue_list = stdout.split("\n").slice(1..-2)
+
+  queue_list.each { |queue| delete_queue(queue) }
+end
+
+def delete_test_message_exchanges
+  stdout, stderr, status = Open3.capture3('rabbitmqctl list_exchanges name')
+  exchange_list = stdout.split("\n").slice(1..-1)
+
+  # Don't want to delete Rabbit's own exchanges
+  exchange_list.delete('')
+  exchange_list.delete_if { |name| name =~ /amq/ }
+
+  exchange_list.each { |exchange| delete_exchange(exchange) }
 end

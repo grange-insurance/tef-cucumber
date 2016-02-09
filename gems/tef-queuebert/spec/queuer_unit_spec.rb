@@ -36,8 +36,7 @@ describe 'Queuer, Unit' do
     let(:mock_test_finder) { create_mock_test_finder }
     let(:configuration) { {logger: mock_logger,
                            suite_request_queue: mock_publisher,
-                           manager_queue: create_mock_queue,
-                           keeper_queue: create_mock_queue,
+                           output_exchange: create_mock_exchange,
                            task_creator: mock_task_creator,
                            test_finder: mock_test_finder} }
     let(:queuer) { clazz.new(configuration) }
@@ -68,14 +67,8 @@ describe 'Queuer, Unit' do
         expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
       end
 
-      it 'will complain if not provided a queue to which to post tasks' do
-        configuration.delete(:manager_queue)
-
-        expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
-      end
-
-      it 'will complain if not provided a queue to which to send suite creation messages' do
-        configuration.delete(:keeper_queue)
+      it 'will complain if not provided an exchange to which it will post messages' do
+        configuration.delete(:output_exchange)
 
         expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
       end

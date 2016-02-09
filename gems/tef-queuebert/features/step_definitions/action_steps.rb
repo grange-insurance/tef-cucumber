@@ -75,7 +75,7 @@ When(/^a request for a test suite is received$/) do
 end
 
 When(/^a request for the test suite is received$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, manager_queue: @mock_manager_queue, keeper_queue: @mock_keeper_queue)
+  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   request = @base_request.dup
   request['directories'] = @explicit_directories if @explicit_directories
@@ -87,20 +87,20 @@ When(/^a request for the test suite is received$/) do
 end
 
 When(/^a test suite is created for the request$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, manager_queue: @mock_manager_queue, keeper_queue: @mock_keeper_queue)
+  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, @request)
 end
 
 When(/^the following suite request is received:$/) do |request|
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, manager_queue: @mock_manager_queue, keeper_queue: @mock_keeper_queue)
+  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   request = process_path(request)
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, request)
 end
 
 When(/^a suite request is rejected$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, manager_queue: @mock_manager_queue, keeper_queue: @mock_keeper_queue)
+  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, '{"bad":"request"}')
 end
@@ -109,8 +109,7 @@ When(/^Queubert is started$/) do
   options = {}
   options[:queue_prefix] = @prefix if @prefix
   options[:suite_request_queue] = @request_queue_name if @request_queue_name
-  options[:manager_queue] = @task_queue_name if @task_queue_name
-  options[:keeper_queue] = @keeper_queue_name if @keeper_queue_name
+  options[:output_exchange] = @output_exchange_name if @output_exchange_name
 
   @queuebert = TEF::Queuebert::Queuebert.new(options)
   @queuebert.start
@@ -130,19 +129,12 @@ When(/^the following request for a test suite is sent to it:$/) do |json_request
 end
 
 And(/^messages have been sent out in response$/) do
-  task_queue_name = "tef.#{@tef_env}.manager"
-  queue = get_queue(task_queue_name)
+  out_message_exchange = "tef.#{@tef_env}.queuebert_generated_messages"
+  message_queue = @bunny_channel.queue('test_message_capture_queue')
+  message_queue.bind(out_message_exchange, routing_key: '#')
 
   # Give the messages a moment to get there
-  wait_for { queue.message_count }.not_to eq(0)
+  wait_for { message_queue.message_count }.not_to eq(0)
 
-  @received_task_messages = messages_from_queue(task_queue_name)
-
-  suite_notification_queue_name = "tef.#{@tef_env}.keeper.cucumber"
-  queue = get_queue(suite_notification_queue_name)
-
-  # Give the messages a moment to get there
-  wait_for { queue.message_count }.not_to eq(0)
-
-  @received_suite_notifications_messages = messages_from_queue(suite_notification_queue_name)
+  @received_messages = messages_from_queue('test_message_capture_queue')
 end

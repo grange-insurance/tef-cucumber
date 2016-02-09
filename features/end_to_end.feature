@@ -8,9 +8,10 @@ Feature: End to end acceptance testing
 
   Scenario: Cucumber task
     Given a queuebert node is running
-    And a manager node is running
+    And a configured manager node is running
     And cuke worker nodes are running
-    And a cuke keeper node is running
+    And a configured cuke keeper node is running
+    And all components have finished starting up
     When  a request for a test suite is sent
     Then results for the executed tests are stored by the keeper
 

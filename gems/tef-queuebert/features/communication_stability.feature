@@ -6,17 +6,16 @@ Feature: Communication stability
   of message data.
 
 
-  Scenario: Message queues persist through message service loss
+  Scenario: Message endpoints persist through message service loss
     Given Queubert is started
-    And messages queues are available
+    And its messages queues are available
+    And its messages exchanges are available
     When the message service goes down
     And the message service comes up
     Then the message queues are still available
+    And the message exchanges are still available
     And Queuebert can still receive and send messages through them
 
-
-  @wip
-  Scenario: Outgoing messages persist through message service loss
 
   @wip
   Scenario: Incoming messages persist through Queuebert loss

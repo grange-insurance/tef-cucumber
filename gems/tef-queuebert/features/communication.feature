@@ -3,47 +3,48 @@ Feature: Communication
   Queuebert uses a messaging service to communicate with other components of the TEF.
 
 
-  Scenario: Creates queues on startup
-    Given message in/out queues for Queuebert have not been yet been created
+  Scenario: Creates message endpoints on startup
+    Given message queues for Queuebert have not yet been created
+    And message exchanges for Queuebert have not yet been created
     When Queubert is started
-    Then message in/out queues for Queuebert have been created
+    Then message queues for Queuebert have been created
+    And message exchanges for Queuebert have been created
 
-  Scenario: Default queue names
+  Scenario: Default endpoint names
 
-  Note: The default queue names incorporate the current environment (e.g. dev/test/prod)
+  Note: The default endpoint names incorporate the current environment (e.g. dev/test/prod)
 
     Given the following message queues have not been yet been created:
       | tef.<env>.queuebert.request |
-      | tef.<env>.manager           |
-      | tef.<env>.keeper.cucumber   |
+    And the following message exchanges have not been yet been created:
+      | tef.<env>.queuebert_generated_messages |
     When Queubert is started
     Then the following message queues have been created:
       | tef.<env>.queuebert.request |
-      | tef.<env>.manager           |
-      | tef.<env>.keeper.cucumber   |
+    And the following message exchanges have been created:
+      | tef.<env>.queuebert_generated_messages |
 
   Scenario: Custom prefix
     Given the following message queues have not been yet been created:
       | my_custom.prefix.queuebert.request |
-      | my_custom.prefix.manager           |
-      | my_custom.prefix.keeper.cucumber   |
+    And the following message exchanges have not been yet been created:
+      | my_custom.prefix.queuebert_generated_messages |
     And a name prefix of "my_custom.prefix"
     When Queubert is started
     Then the following message queues have been created:
       | my_custom.prefix.queuebert.request |
-      | my_custom.prefix.manager           |
-      | my_custom.prefix.keeper.cucumber   |
+    And the following message exchanges have been created:
+      | my_custom.prefix.queuebert_generated_messages |
 
-  Scenario: Custom queue names
+  Scenario: Custom endpoint names
     Given the following message queues have not been yet been created:
       | special.request.queue |
-      | manager.queue         |
-      | keeper.queue          |
+    And the following message exchanges have not been yet been created:
+      | special.message.exchange |
     And a request queue name of "special.request.queue"
-    And a task queue name of "manager.queue"
-    And a keeper queue name of "keeper.queue"
+    And an output exchange name of "special.message.exchange"
     When Queubert is started
     Then the following message queues have been created:
       | special.request.queue |
-      | manager.queue         |
-      | keeper.queue          |
+    And the following message exchanges have been created:
+      | special.message.exchange |

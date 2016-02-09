@@ -57,9 +57,8 @@ Given(/^a queue to receive from$/) do
   @fake_publisher = create_fake_publisher(@mock_channel)
 end
 
-Given(/^queues to publish to$/) do
-  @mock_manager_queue = create_mock_queue
-  @mock_keeper_queue = create_mock_queue
+Given(/^an exchange to publish to$/) do
+  @out_message_exchange = create_mock_exchange
 end
 
 Given(/^Queuebert is running$/) do
@@ -89,31 +88,47 @@ Given(/^a test directory of "([^"]*)"$/) do |path|
   @test_directory = process_path(path)
 end
 
-Given(/^message in\/out queues for Queuebert have not been yet been created$/) do
-  request_queue_name = "tef.#{@tef_env}.queuebert.request"
-  task_queue_name = "tef.#{@tef_env}.task_queue.control"
+Given(/^message queues for Queuebert have not yet been created$/) do
+  in_queue_name = "tef.#{@tef_env}.queuebert.request"
 
-  get_queue(request_queue_name).delete if @bunny_connection.queue_exists?(request_queue_name)
-  get_queue(task_queue_name).delete if @bunny_connection.queue_exists?(task_queue_name)
+  delete_queue(in_queue_name) if @bunny_connection.queue_exists?(in_queue_name)
+end
+
+Given(/^message exchanges for Queuebert have not yet been created$/) do
+  out_exchange_name = "tef.#{@tef_env}.queuebert_generated_messages"
+
+  delete_exchange(out_exchange_name) if @bunny_connection.exchange_exists?(out_exchange_name)
 end
 
 And(/^a request queue name of "([^"]*)"$/) do |queue_name|
   @request_queue_name = queue_name
 end
 
+And(/^an output exchange name of "([^"]*)"$/) do |exchange_name|
+  @output_exchange_name = exchange_name
+end
+
 And(/^a task queue name of "([^"]*)"$/) do |queue_name|
   @task_queue_name = queue_name
 end
 
-And(/^messages queues are available$/) do
+And(/^its messages queues are available$/) do
   @request_queue_name = "tef.#{@tef_env}.queuebert.request"
-  @task_queue_name = "tef.#{@tef_env}.manager"
-  @keeper_queue_name = "tef.#{@tef_env}.keeper.cucumber"
 
-  @expected_queues = [@request_queue_name, @task_queue_name, @keeper_queue_name]
+  @expected_queues = [@request_queue_name]
 
   @expected_queues.each do |queue_name|
     raise("Message queue #{queue_name} has not been created yet.") unless @bunny_connection.queue_exists?(queue_name)
+  end
+end
+
+And(/^its messages exchanges are available$/) do
+  @message_exchange_name = "tef.#{@tef_env}.queuebert_generated_messages"
+
+  @expected_exchanges = [@message_exchange_name]
+
+  @expected_exchanges.each do |exchange_name|
+    raise("Message exchange #{exchange_name} has not been created yet.") unless @bunny_connection.exchange_exists?(exchange_name)
   end
 end
 

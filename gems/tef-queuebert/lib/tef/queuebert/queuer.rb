@@ -65,14 +65,12 @@ module TEF
 
       def validate_configuration_options(options)
         raise(ArgumentError, 'Configuration options must have a :suite_request_queue') unless options[:suite_request_queue]
-        raise(ArgumentError, 'Configuration options must have a :manager_queue') unless options[:manager_queue]
-        raise(ArgumentError, 'Configuration options must have a :keeper_queue') unless options[:keeper_queue]
+        raise(ArgumentError, 'Configuration options must have a :output_exchange') unless options[:output_exchange]
       end
 
       def configure_self(options)
-        @out_queue = options[:manager_queue]
+        @output_exchange = options[:output_exchange]
         @in_queue = options[:suite_request_queue]
-        @keeper_queue = options[:keeper_queue]
         @task_creator = options.fetch(:task_creator, Tasking)
         @test_finder = options.fetch(:test_finder, Searching)
         @logger = options.fetch(:logger, Logger.new($stdout))
@@ -185,7 +183,7 @@ module TEF
           task_message = task.to_json
           logger.debug("forwarding task: #{task_message}")
 
-          @out_queue.publish(task_message)
+          @output_exchange.publish(task_message, routing_key: 'task')
         end
       end
 
@@ -221,7 +219,7 @@ module TEF
         creation_notification[:requested_time] = DateTime.now
 
         notifications.each do |notification|
-          @keeper_queue.publish(notification.to_json)
+          @output_exchange.publish(notification.to_json, routing_key: 'suite')
         end
       end
 

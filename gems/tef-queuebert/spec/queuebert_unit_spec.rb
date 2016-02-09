@@ -11,7 +11,7 @@ describe 'Queuebert, Unit' do
   it_should_behave_like 'a receiving component, unit level', [:suite_request_queue]
   it_should_behave_like 'a sending component, unit level', [:manager_queue, :keeper_queue]
   it_should_behave_like 'a logged component, unit level'
-  it_should_behave_like 'a wrapper component, unit level', [:suite_request_queue, :manager_queue, :keeper_queue]
+  it_should_behave_like 'a wrapper component, unit level', [:suite_request_queue, :output_exchange]
 
 
   # todo - make these default value tests part of a common spec
@@ -23,18 +23,11 @@ describe 'Queuebert, Unit' do
     expect(queuebert.instance_variable_get(:@suite_request_queue)).to_not be_nil
   end
 
-  it 'has a default manager queue' do
-    configuration.delete(:manager_queue)
+  it 'has a default output exchange' do
+    configuration.delete(:output_exchange)
 
     queuebert = clazz.new(configuration)
-    expect(queuebert.instance_variable_get(:@manager_queue)).to_not be_nil
-  end
-
-  it 'has a default keeper queue' do
-    configuration.delete(:keeper_queue)
-
-    queuebert = clazz.new(configuration)
-    expect(queuebert.instance_variable_get(:@keeper_queue)).to_not be_nil
+    expect(queuebert.instance_variable_get(:@output_exchange)).to_not be_nil
   end
 
 end

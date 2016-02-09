@@ -14,6 +14,12 @@ namespace 'tef' do
       Rake::Task['tef:cucumber:create_cuke_keeper'].invoke
     end
 
+    desc 'Spin up a local version of a manager'
+    task :create_manager => [:set_tef_environment] do
+      # todo - Assuming Windows OS for the moment
+      Process.spawn('start "Manager" cmd /c bundle exec ruby bin/start_tef_configured_manager')
+    end
+
     desc 'Spin up a local version of a queuebert'
     task :create_queuebert => [:set_tef_environment] do
       # todo - Assuming Windows OS for the moment
