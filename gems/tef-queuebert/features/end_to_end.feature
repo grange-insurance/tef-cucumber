@@ -68,6 +68,7 @@ Feature: Task suite creation
         "dependencies":          ["thing_1","thing_2"],
         "command_line_options":  {"options":"--quiet"},
         "gemfile":               "tests/gemfile",
+        "priority":              "7",
         "env":                   "env_foo"
       }
       """
@@ -84,7 +85,8 @@ Feature: Task suite creation
                        "root_location": "path/to/root",
                        "working_directory": "tests/run/here",
                        "gemfile": "tests/gemfile"},
-        "suite_guid": "123456"
+        "suite_guid": "123456",
+        "priority":   "7"
       }
       """
     And the following message was sent and routed with "task":
@@ -99,7 +101,8 @@ Feature: Task suite creation
                        "root_location": "path/to/root",
                        "working_directory": "tests/run/here",
                        "gemfile": "tests/gemfile"},
-        "suite_guid": "123456"
+        "suite_guid": "123456",
+        "priority":   "7"
       }
       """
     And the following message was sent and routed with "task":
@@ -114,7 +117,8 @@ Feature: Task suite creation
                        "root_location": "path/to/root",
                        "working_directory": "tests/run/here",
                        "gemfile": "tests/gemfile"},
-        "suite_guid": "123456"
+        "suite_guid": "123456",
+        "priority":   "7"
       }
       """
     And  the following message was sent and routed with "suite":
