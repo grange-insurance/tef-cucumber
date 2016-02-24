@@ -15,7 +15,7 @@ module TEF
 
         test_cases = Array.new.tap do |found_tests|
           target.each do |directory|
-            found_tests.concat(CukeSlicer::Slicer.new.slice("#{root}/#{directory}", filters))
+            found_tests.concat(CukeSlicer::Slicer.new.slice("#{root}/#{directory}", filters, :file_line))
           end
         end
 

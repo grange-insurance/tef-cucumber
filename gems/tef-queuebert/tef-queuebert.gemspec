@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.9'
 
   spec.add_dependency 'tef-core', '~> 0'
-  spec.add_dependency 'cuke_slicer', '~>1.0'
+  spec.add_dependency 'cuke_slicer', '~>2.0'
   spec.add_dependency 'bunny', '~> 1.4'
 end
