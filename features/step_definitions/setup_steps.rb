@@ -1,38 +1,62 @@
 require 'tef/development/step_definitions/setup_steps'
 
 
-And(/^a configured manager node is running$/) do
-  @manager_pid = Process.spawn('start "Manager" cmd /c bundle exec ruby bin/start_tef_configured_manager')
+And(/^a local configured manager node is running$/) do
+  here = File.dirname(__FILE__)
+  path_to_manager_binary = "#{here}/../../bin/start_tef_configured_manager"
+
+  # todo - Assuming Windows OS for the moment
+  @manager_pid = Process.spawn("start \"Manager\" cmd /c bundle exec ruby #{path_to_manager_binary}")
   Process.detach(@manager_pid)
 end
 
-And(/^a configured cuke keeper node is running$/) do
-  @cuke_keeper_pid = Process.spawn('start "Cuke Keeper" cmd /c bundle exec ruby bin/start_tef_configured_cuke_keeper')
+And(/^a local configured cuke keeper node is running$/) do
+  here = File.dirname(__FILE__)
+  path_to_keeper_binary = "#{here}/../../bin/start_tef_configured_cuke_keeper"
+
+  # todo - Assuming Windows OS for the moment
+  @cuke_keeper_pid = Process.spawn("start \"Cuke Keeper\" cmd /c bundle exec ruby #{path_to_keeper_binary}")
   Process.detach(@cuke_keeper_pid)
 end
 
-Given(/^a queuebert node is running$/) do
-  @queuebert_pid = Process.spawn('start "Queuebert" cmd /c bundle exec ruby gems/tef-queuebert/bin/start_tef_queuebert')
+Given(/^a local queuebert node is running$/) do
+  here = File.dirname(__FILE__)
+  path_to_queuebert_binary = "#{here}/../../gems/tef-queuebert/bin/start_tef_queuebert"
+
+  # todo - Assuming Windows OS for the moment
+  @queuebert_pid = Process.spawn("start \"Queuebert\" cmd /c bundle exec ruby #{path_to_queuebert_binary}")
   Process.detach(@queuebert_pid)
 end
 
-And(/^a cuke worker node is running$/) do
-  @cuke_worker_pid = Process.spawn('start "Cuke Worker" cmd /c bundle exec ruby gems/tef-worker-cuke_worker/bin/start_tef_cuke_worker')
+And(/^a local cuke worker node is running$/) do
+  here = File.dirname(__FILE__)
+  path_to_worker_binary = "#{here}/../../gems/tef-worker-cuke_worker/bin/start_tef_cuke_worker"
+
+  # todo - Assuming Windows OS for the moment
+  @cuke_worker_pid = Process.spawn("start \"Cuke Worker\" cmd /c bundle exec ruby #{path_to_worker_binary}")
   Process.detach(@cuke_worker_pid)
 end
 
-And(/^(?:"([^"]*)" )?cuke worker nodes are running$/) do |worker_count|
+And(/^(?:"([^"]*)" )?local cuke worker nodes are running$/) do |worker_count|
+  here = File.dirname(__FILE__)
+  path_to_worker_binary = "#{here}/../../gems/tef-worker-cuke_worker/bin/start_tef_cuke_worker"
+
   @cuke_worker_pids ||= []
   worker_count = worker_count ? worker_count.to_i : 5
 
   worker_count.times do
-    @cuke_worker_pids << Process.spawn('start "Cuke Worker" cmd /c bundle exec ruby gems/tef-worker-cuke_worker/bin/start_tef_cuke_worker')
+    # todo - Assuming Windows OS for the moment
+    @cuke_worker_pids << Process.spawn("start \"Cuke Worker\" cmd /c bundle exec ruby #{path_to_worker_binary}")
     Process.detach(@cuke_worker_pids.last)
   end
 end
 
-And(/^a cuke keeper node is running$/) do
-  @cuke_keeper_pid = Process.spawn('start "Cuke Keeper" cmd /c bundle exec ruby gems/tef-cuke_keeper/bin/start_tef_cuke_keeper')
+And(/^a local cuke keeper node is running$/) do
+  here = File.dirname(__FILE__)
+  path_to_keeper_binary = "#{here}/../../gems/tef-cuke_keeper/bin/start_tef_cuke_keeper"
+
+  # todo - Assuming Windows OS for the moment
+  @cuke_keeper_pid = Process.spawn("start \"Cuke Keeper\" cmd /c bundle exec ruby #{path_to_keeper_binary}")
   Process.detach(@cuke_keeper_pid)
 end
 
