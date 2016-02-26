@@ -1,5 +1,4 @@
 require 'cuke_slicer'
-# Feels like I shouldn't have to do this in a relative manner...
 require 'tef/queuebert/gem_extensions'
 
 
