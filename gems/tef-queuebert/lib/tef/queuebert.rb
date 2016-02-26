@@ -32,6 +32,9 @@ module TEF
         create_message_destinations
         create_queuer
 
+        # Monkey patching a module so that it we can log inside of it
+        CukeModeler::Parsing.set_logger(logger)
+
         @logger.info('Queuebert started.')
       end
 
