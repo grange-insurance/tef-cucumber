@@ -15,7 +15,7 @@ end
 # The development (i.e. source code) versions of gems that are (or are needed by) our stuff
 def dev_gems
   gem 'bunny', '~> 1.4'
-  gem 'cuke_slicer', '~>1.0'
+  gem 'cuke_slicer', '~>2.0'
 
   # Dev mode has to explicitly include every needed gem dependency in the project in order to
   # be properly (i.e. recursively) loaded from source by Bundler
@@ -27,7 +27,7 @@ end
 # The real (i.e. installed on the machine) versions gems that are (or are needed by) our stuff
 def test_gems
   gem 'bunny', '~> 1.4'
-  gem 'cuke_slicer', '~>1.0'
+  gem 'cuke_slicer', '~>2.0'
 
   gem 'tef-core'
   gem 'tef-queuebert'
