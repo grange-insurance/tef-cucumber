@@ -96,12 +96,13 @@ module TEF
                     }'
 
           begin
+            logger.info 'Queue request received'
+
             if valid_request?(payload)
-              logger.info 'Queue request received'
               exchange.publish('Request received', :routing_key => meta.reply_to, :correlation_id => meta.correlation_id)
               create_test_suite(JSON.parse(payload, symbolize_names: true))
             else
-              logger.error "Invalid queue request received: #{payload}"
+              logger.error "Invalid queue request: #{payload}"
               exchange.publish("Invalid request. #{format.delete(" \n")}", :routing_key => meta.reply_to, :correlation_id => meta.correlation_id)
             end
           rescue => e

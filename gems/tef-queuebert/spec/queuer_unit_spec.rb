@@ -193,7 +193,7 @@ describe 'Queuer, Unit' do
 
         fake_publisher.call(create_mock_delivery_info, @mock_properties, bad_request.to_json)
 
-        expect(mock_logger).to have_received(:error).with(/invalid.*request received.*#{bad_request}/i)
+        expect(mock_logger).to have_received(:error).with(/invalid.*request.*#{bad_request}/i)
       end
 
     end
