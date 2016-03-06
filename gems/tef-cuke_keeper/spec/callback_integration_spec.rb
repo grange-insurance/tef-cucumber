@@ -109,7 +109,7 @@ describe 'CukeKeeper.callback, Integration' do
           unless attribute == :complete
             it "stores the '#{attribute}' when it creates a suite record" do
               values = {name: 'bar',
-                        requested_time: (DateTime.now + 7).to_json,
+                        requested_time: (Time.now.getlocal + 7).to_s,
                         suite_guid: 'test suite 54321'
               }
 
@@ -185,9 +185,8 @@ describe 'CukeKeeper.callback, Integration' do
               values = {owner: {old: 'foo', new: 'bar'},
                         name: {old: 'foo', new: 'bar'},
                         env: {old: 'foo', new: 'bar'},
-                        requested_time: {old: DateTime.now, new: (DateTime.now + 7).to_json},
-                        finished_time: {old: DateTime.now, new: (DateTime.now + 7).to_json}
-
+                        requested_time: {old: DateTime.now, new: (Time.now.getlocal + 7).to_s},
+                        finished_time: {old: DateTime.now, new: (Time.now.getlocal + 7).to_s}
               }[attribute]
 
               suite_guid = 'existing test suite guid'

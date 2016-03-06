@@ -7,6 +7,8 @@ require 'tef/cuke_keeper/models/feature'
 require 'tef/cuke_keeper/models/scenario'
 require 'json'
 
+ActiveRecord::Base.default_timezone = :local
+
 
 module TEF
   module CukeKeeper
