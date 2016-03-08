@@ -15,7 +15,7 @@ describe 'CukeWorker, Unit' do
     let(:configuration) { {root_location: @default_file_directory,
                            logger: create_mock_logger,
                            in_queue: mock_in_queue,
-                           out_queue: create_mock_queue,
+                           output_exchange: create_mock_exchange,
                            manager_queue: create_mock_queue} }
     let(:worker) { clazz.new(configuration) }
 
@@ -42,8 +42,8 @@ describe 'CukeWorker, Unit' do
         expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
       end
 
-      it 'will complain if not provided a queue to which to post task results' do
-        configuration.delete(:out_queue)
+      it 'will complain if not provided an exchange to which to post task results' do
+        configuration.delete(:output_exchange)
 
         expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
       end

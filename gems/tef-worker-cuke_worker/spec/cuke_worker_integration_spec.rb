@@ -10,7 +10,7 @@ describe 'CukeWorker, Integration' do
   let(:in_queue) { create_mock_queue }
   let(:configuration) { {root_location: @default_file_directory,
                          in_queue: in_queue,
-                         out_queue: create_mock_queue,
+                         output_exchange: create_mock_exchange,
                          manager_queue: mock_manager_queue} }
   let(:worker) { clazz.new(configuration) }
 

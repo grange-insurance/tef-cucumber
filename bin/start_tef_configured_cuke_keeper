@@ -17,9 +17,11 @@ bunny_connection = Bunny.new(bunny_url)
 bunny_connection.start
 bunny_channel = bunny_connection.create_channel
 
+worker_exchange = bunny_channel.topic("tef.#{tef_env}.cucumber.worker_generated_messages", durable: true)
 queuebert_exchange = bunny_channel.topic("tef.#{tef_env}.queuebert_generated_messages", durable: true)
 keeper_queue = bunny_channel.queue("tef.#{tef_env}.keeper.cucumber", durable: true)
 keeper_queue.bind(queuebert_exchange, routing_key: 'suite')
+keeper_queue.bind(worker_exchange, routing_key: 'task')
 
 options = {}
 options[:keeper_type] = 'cucumber'
