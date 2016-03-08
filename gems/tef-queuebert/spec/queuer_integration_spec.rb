@@ -45,7 +45,7 @@ describe 'Queuer, Integration' do
 
     @fake_publisher = create_fake_publisher(@mock_channel)
 
-    @options = {suite_request_queue: @mock_publisher, output_exchange: create_mock_exchange, task_creator: @mock_task_creator}
+    @options = {in_queue: @mock_publisher, output_exchange: create_mock_exchange, task_creator: @mock_task_creator}
   end
 
   it_should_behave_like 'a logged component, integration level' do
@@ -82,7 +82,7 @@ describe 'Queuer, Integration' do
         @test_request.delete('root_location')
         ENV[root_var] = 'configured root location'
         @test_request['directories'] = ['some directory']
-        @options[:suite_request_queue] = @fake_publisher
+        @options[:in_queue] = @fake_publisher
         @options[:test_finder] = @mock_test_finder
         queuer = clazz.new(@options)
 
@@ -98,7 +98,7 @@ describe 'Queuer, Integration' do
   end
 
   it 'only treats the given test directory as an explicit directory when no other sources are given' do
-    @options[:suite_request_queue] = @fake_publisher
+    @options[:in_queue] = @fake_publisher
     @options[:task_creator] = @mock_task_creator
     queuer = clazz.new(@options) # Not using the queuer, just linking it up with the publisher
 
@@ -134,7 +134,7 @@ describe 'Queuer, Integration' do
   end
 
   it 'fully expands file paths when determining test path uniqueness' do
-    @options[:suite_request_queue] = @fake_publisher
+    @options[:in_queue] = @fake_publisher
     @options[:task_creator] = @mock_task_creator
     @options[:test_finder] = @mock_test_finder
     queuer = clazz.new(@options) # Not using the queuer, just linking it up with the publisher
@@ -161,7 +161,7 @@ describe 'Queuer, Integration' do
     root_var = 'TEF_QUEUEBERT_SEARCH_ROOT'
     old_root = ENV[root_var]
 
-    @options[:suite_request_queue] = @fake_publisher
+    @options[:in_queue] = @fake_publisher
     @options[:task_creator] = @mock_task_creator
     queuer = clazz.new(@options) # Not using the queuer, just linking it up with the publisher
 
@@ -186,7 +186,7 @@ describe 'Queuer, Integration' do
     root_var = 'TEF_QUEUEBERT_SEARCH_ROOT'
     old_root = ENV[root_var]
 
-    @options[:suite_request_queue] = @fake_publisher
+    @options[:in_queue] = @fake_publisher
     @options[:task_creator] = @mock_task_creator
     @options[:logger] = @mock_logger
     queuer = clazz.new(@options) # Not using the queuer, just linking it up with the publisher
@@ -212,7 +212,7 @@ describe 'Queuer, Integration' do
     root_var = 'TEF_QUEUEBERT_SEARCH_ROOT'
     old_root = ENV[root_var]
     delivery_info = create_mock_delivery_info
-    @options[:suite_request_queue] = @fake_publisher
+    @options[:in_queue] = @fake_publisher
 
     clazz.new(@options) # Not using the queuer, just linking it up with the publisher
 
@@ -237,7 +237,7 @@ describe 'Queuer, Integration' do
 
     it 'acknowledges the messages that it handles, even if errors occur while handling them' do
       delivery_info = create_mock_delivery_info
-      @options[:suite_request_queue] = @fake_publisher
+      @options[:in_queue] = @fake_publisher
       @test_request['directories'] =['not a real directory']
 
 
@@ -254,7 +254,7 @@ describe 'Queuer, Integration' do
 
     it 'logs when an error occurs while handling a message' do
       delivery_info = create_mock_delivery_info
-      @options[:suite_request_queue] = @fake_publisher
+      @options[:in_queue] = @fake_publisher
       @options[:logger] = @mock_logger
       @test_request['directories'] = ['not a real directory']
 
@@ -275,7 +275,7 @@ describe 'Queuer, Integration' do
 
     it 'it logs the tasks that it queues' do
       delivery_info = create_mock_delivery_info
-      @options[:suite_request_queue] = @fake_publisher
+      @options[:in_queue] = @fake_publisher
       @options[:logger] = @mock_logger
       allow(@mock_task_creator).to receive(:create_tasks_for).and_return([{task_1: 'foo'}, {task_2: 'bar'}])
 

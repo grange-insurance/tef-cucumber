@@ -35,7 +35,7 @@ describe 'Queuer, Unit' do
                               mock }
     let(:mock_test_finder) { create_mock_test_finder }
     let(:configuration) { {logger: mock_logger,
-                           suite_request_queue: mock_publisher,
+                           in_queue: mock_publisher,
                            output_exchange: create_mock_exchange,
                            task_creator: mock_task_creator,
                            test_finder: mock_test_finder} }
@@ -62,7 +62,7 @@ describe 'Queuer, Unit' do
       end
 
       it 'will complain if not provided a queue from which to receive requests' do
-        configuration.delete(:suite_request_queue)
+        configuration.delete(:in_queue)
 
         expect { clazz.new(configuration) }.to raise_error(ArgumentError, /must have/i)
       end
@@ -166,7 +166,7 @@ describe 'Queuer, Unit' do
       end
 
       it 'logs when it receives a valid request' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         clazz.new(configuration)
 
         fake_publisher.call(create_mock_delivery_info, @mock_properties, test_request.to_json)
@@ -179,7 +179,7 @@ describe 'Queuer, Unit' do
     describe 'bad request handling' do
 
       it 'can gracefully handle bad JSON' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         clazz.new(configuration)
         bad_request = 'a very bad request'
 
@@ -187,7 +187,7 @@ describe 'Queuer, Unit' do
       end
 
       it 'logs when it receives an invalid request' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         clazz.new(configuration)
         bad_request = 'a very bad request'
 
@@ -203,7 +203,7 @@ describe 'Queuer, Unit' do
       it 'delegates test finding to its provided test finder' do
         test_request[:root_location] = @default_file_directory
         test_request[:directories] = ['some', 'directories']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -214,7 +214,7 @@ describe 'Queuer, Unit' do
 
       it 'provides to its test finder a root location, a collection of directories in which to find tests, and a set of filters' do
         test_request[:directories] = ['some', 'directories']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -226,7 +226,7 @@ describe 'Queuer, Unit' do
       it 'uses the root location given in the request as the root location provided to its test finder' do
         test_request[:directories] = ['some', 'directories']
         test_request[:root_location] = 'some root location'
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -237,7 +237,7 @@ describe 'Queuer, Unit' do
 
       it 'uses the directories given in the request as the directories provided to its test finder' do
         test_request[:directories] = ['some', 'directories']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -251,7 +251,7 @@ describe 'Queuer, Unit' do
         test_request[:tag_inclusions] = '/bar/'
         test_request[:path_exclusions] = ['baz']
         test_request[:path_inclusions] = ['/buzz/']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -262,7 +262,7 @@ describe 'Queuer, Unit' do
 
       it 'does not search for tests if no directories are given in the request' do
         test_request.delete(:directories)
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:test_finder] = mock_test_finder
         queuer = clazz.new(configuration)
 
@@ -275,7 +275,7 @@ describe 'Queuer, Unit' do
     describe 'task creation' do
 
       it 'delegates task creation to its provided task creator' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:task_creator] = mock_task_creator
         queuer = clazz.new(configuration)
 
@@ -285,7 +285,7 @@ describe 'Queuer, Unit' do
       end
 
       it 'provides to its task creator a collection of tests for which tasks are needed and other request data' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:task_creator] = mock_task_creator
         queuer = clazz.new(configuration)
 
@@ -295,7 +295,7 @@ describe 'Queuer, Unit' do
       end
 
       it 'uses the given request data the request data provided to its test finder' do
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:task_creator] = mock_task_creator
         queuer = clazz.new(configuration)
 
@@ -307,7 +307,7 @@ describe 'Queuer, Unit' do
 
       it 'includes explicit tests in the test collection provided to its task creator' do
         test_request[:tests] = ['some', 'tests']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:task_creator] = mock_task_creator
         queuer = clazz.new(configuration)
 
@@ -320,7 +320,7 @@ describe 'Queuer, Unit' do
         test_finder = create_mock_test_finder
         allow(test_finder).to receive(:find_test_cases).and_return(['test_1', 'test_2'])
         test_request[:directories] = ['some_directory']
-        configuration[:suite_request_queue] = fake_publisher
+        configuration[:in_queue] = fake_publisher
         configuration[:task_creator] = mock_task_creator
         configuration[:test_finder] = test_finder
         queuer = clazz.new(configuration)

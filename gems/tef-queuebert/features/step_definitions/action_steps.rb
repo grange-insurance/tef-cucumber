@@ -75,7 +75,7 @@ When(/^a request for a test suite is received$/) do
 end
 
 When(/^a request for the test suite is received$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
+  TEF::Queuebert::Queuer.new(in_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   request = @base_request.dup
   request['directories'] = @explicit_directories if @explicit_directories
@@ -87,28 +87,28 @@ When(/^a request for the test suite is received$/) do
 end
 
 When(/^a test suite is created for the request$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
+  TEF::Queuebert::Queuer.new(in_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, @request)
 end
 
 When(/^the following suite request is received:$/) do |request|
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
+  TEF::Queuebert::Queuer.new(in_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   request = process_path(request)
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, request)
 end
 
 When(/^a suite request is rejected$/) do
-  TEF::Queuebert::Queuer.new(suite_request_queue: @fake_publisher, output_exchange: @out_message_exchange)
+  TEF::Queuebert::Queuer.new(in_queue: @fake_publisher, output_exchange: @out_message_exchange)
 
   @fake_publisher.call(create_mock_delivery_info, @mock_properties, '{"bad":"request"}')
 end
 
 When(/^Queubert is started$/) do
   options = {}
-  options[:queue_prefix] = @prefix if @prefix
-  options[:suite_request_queue] = @request_queue_name if @request_queue_name
+  options[:name_prefix] = @prefix if @prefix
+  options[:in_queue] = @request_queue_name if @request_queue_name
   options[:output_exchange] = @output_exchange_name if @output_exchange_name
 
   @queuebert = TEF::Queuebert::Queuebert.new(options)

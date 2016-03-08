@@ -1,19 +1,16 @@
 module TEF
   module Queuebert
-    class Queuer < Bunny::Consumer
-      attr_reader :logger
+    class Queuer < TEF::Core::InnerComponent
+
 
       def initialize(options)
-        validate_configuration_options(options)
-        configure_self(options)
+        super
 
         @logger.debug("Root location: #{ENV['TEF_QUEUEBERT_SEARCH_ROOT']}")
 
-        # todo - test the ack flag being used
-        super(@in_queue.channel, @in_queue, @in_queue.channel.generate_consumer_tag, false)
+        set_message_action(queuer_callback)
 
-        set_message_action
-        listen_for_messages
+        start
       end
 
       def valid_request?(payload)
@@ -64,20 +61,20 @@ module TEF
       end
 
       def validate_configuration_options(options)
-        raise(ArgumentError, 'Configuration options must have a :suite_request_queue') unless options[:suite_request_queue]
-        raise(ArgumentError, 'Configuration options must have a :output_exchange') unless options[:output_exchange]
+        super
+
+        raise(ArgumentError, 'Configuration options must have an :output_exchange') unless options[:output_exchange]
       end
 
       def configure_self(options)
-        @output_exchange = options[:output_exchange]
-        @in_queue = options[:suite_request_queue]
+        super
+
         @task_creator = options.fetch(:task_creator, Tasking)
         @test_finder = options.fetch(:test_finder, Searching)
-        @logger = options.fetch(:logger, Logger.new($stdout))
       end
 
-      def set_message_action
-        self.on_delivery do |delivery_info, meta, payload|
+      def queuer_callback
+        lambda { |_delivery_info, properties, payload|
 
           exchange = @in_queue.channel.default_exchange
           format = '{
@@ -95,27 +92,16 @@ module TEF
                       "path_inclusions":       "optional"
                     }'
 
-          begin
-            logger.info 'Queue request received'
+          @logger.info 'Queue request received'
 
-            if valid_request?(payload)
-              exchange.publish('Request received', :routing_key => meta.reply_to, :correlation_id => meta.correlation_id)
-              create_test_suite(JSON.parse(payload, symbolize_names: true))
-            else
-              logger.error "Invalid queue request: #{payload}"
-              exchange.publish("Invalid request. #{format.delete(" \n")}", :routing_key => meta.reply_to, :correlation_id => meta.correlation_id)
-            end
-          rescue => e
-            @logger.error "There was a problem while handling the message: #{e.message}:#{e.backtrace}"
+          if valid_request?(payload)
+            exchange.publish('Request received', :routing_key => properties.reply_to, :correlation_id => properties.correlation_id)
+            create_test_suite(JSON.parse(payload, symbolize_names: true))
+          else
+            logger.error "Invalid queue request: #{payload}"
+            exchange.publish("Invalid request. #{format.delete(" \n")}", :routing_key => properties.reply_to, :correlation_id => properties.correlation_id)
           end
-
-          @in_queue.channel.acknowledge(delivery_info.delivery_tag, false)
-        end
-      end
-
-      def listen_for_messages
-        # Non-blocking is the default but passing it in anyway for clarity
-        @in_queue.subscribe_with(self, block: false)
+        }
       end
 
       def create_test_suite(request)

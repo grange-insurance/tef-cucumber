@@ -16,9 +16,9 @@ describe 'Queuebert, Integration' do
 
   it_should_behave_like 'a logged component, integration level'
   it_should_behave_like 'a service component, integration level'
-  it_should_behave_like 'a receiving component, integration level', [:suite_request_queue]
+  it_should_behave_like 'a receiving component, integration level', [:in_queue]
   it_should_behave_like 'a sending component, integration level', [:manager_queue, :keeper_queue]
-  it_should_behave_like 'a wrapper component, integration level', [:suite_request_queue, :output_exchange]
+  it_should_behave_like 'a wrapper component, integration level', [:in_queue, :output_exchange]
 
 
   it 'uses its own logging object when creating its queuer' do
@@ -41,7 +41,7 @@ describe 'Queuebert, Integration' do
     File.open(test_file, 'w') { |file| file.write("Feature: Syntactically invalid \n @foo") }
 
     test_request[:directories] = ['.']
-    configuration[:suite_request_queue] = fake_publisher
+    configuration[:in_queue] = fake_publisher
     queuebert = clazz.new(configuration)
 
     begin
