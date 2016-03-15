@@ -1,39 +1,20 @@
-# TEF::Cucumber
+# *TEF Cucumber* (a Cucumber extensions for the Task Execution Framework) 
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/tef/cucumber`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-TODO: Delete this and the text above, and describe your gem
+## About
+This gem provides extensions to the [**Task Execution Framework**](https://github.com/grange-insurance/tef-cucumber) make it easier to use the TEF to run Cucumber tests. 
 
-## Installation
 
-Add this line to your application's Gemfile:
+## Services
+The services below are additions to a basic TEF installation.
 
-```ruby
-gem 'tef-cucumber'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install tef-cucumber
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/tef-cucumber/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+ - **Queuebert**  - Breaks down a test suite into individual tests and creates special cucumber tasks for them.       
+ - **CukeWorker** - A specialized worker type that is aware of Bundler gemfiles and uses a special Cucumber formatter for test output.
+ - **CukeKeeper** - A specialized keeper that will store the result of a Cucumber task in a database.
+  
+For information on how to set up each service, see the documentation for each service.
+ 
+ - [**Queuebert**](https://github.com/grange-insurance/tef-cucumber/tree/master/gems/tef-queuebert)
+ - [**CukeWorker**](https://github.com/grange-insurance/tef-cucumber/tree/master/gems/tef-worker-cuke_worker)
+ - [**CukeKeeper**](https://github.com/grange-insurance/tef-cucumber/tree/master/gems/tef-cuke_keeper)
+ 

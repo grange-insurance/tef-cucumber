@@ -1,4 +1,4 @@
 Queuebert
 =========
 
-Queuebert is responsible for dynamically creating the tasks that are sent to the TEF Manager.
+A Queuebert component breaks down a test suite into individual tests and creates special cucumber tasks for them.

@@ -1,29 +1,11 @@
-# TEF::CukeKeeper
+TEF CukeKeeper
+=========
 
-TODO: Write a gem description
+A CukeKeeper is responsible handling the results of Cucumber tasks. Task output is stored in a database for later analysis.
 
-## Installation
 
-Add this line to your application's Gemfile:
+Getting Started
+=========
 
-    gem 'tef-cuke_keeper'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install tef-cuke_keeper
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/tef-cuke_keeper/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+To run a Cucumber keeper, simply follow the same setup steps as a [regular keeper](https://github.com/grange-insurance/tef/blob/master/gems/tef-keeper/README.md)
+and use the callback provided by this gem.
